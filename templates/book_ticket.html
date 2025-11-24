@@ -1,0 +1,2003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Tickets - MuseumHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+   <style>
+        :root {
+            --royal-blue: #1e3a8a;
+            --navy-blue: #1e40af;
+            --light-blue: #3b82f6;
+            --accent-blue: #60a5fa;
+            --pure-white: #ffffff;
+            --soft-white: #f8fafc;
+            --light-gray: #e2e8f0;
+            --text-dark: #1e293b;
+            --gold-accent: #d97706;
+            --success-green: #059669;
+            --warm-gray: #64748b;
+            --pink-accent: #ec4899;
+            --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-large: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--soft-white) 0%, #e6f2ff 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--royal-blue) 0%, var(--navy-blue) 100%);
+            padding: 1.5rem 2rem;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back-btn {
+            color: var(--pure-white);
+            font-size: 1.5rem;
+            text-decoration: none;
+            padding: 0.75rem;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-3px);
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--pure-white);
+        }
+
+        .header-title i {
+            color: var(--gold-accent);
+            margin-right: 1rem;
+        }
+
+        /* Main Container */
+        .booking-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .booking-card {
+            background: var(--pure-white);
+            border-radius: 25px;
+            padding: 3rem;
+            box-shadow: var(--shadow-large);
+            border: 1px solid var(--light-gray);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .booking-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--royal-blue), var(--light-blue), var(--gold-accent));
+        }
+
+        /* Calendar Section */
+        .calendar-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--royal-blue);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title i {
+            color: var(--gold-accent);
+        }
+
+        .calendar {
+            background: linear-gradient(135deg, var(--royal-blue) 0%, var(--navy-blue) 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            color: var(--pure-white);
+        }
+
+        .calendar-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .month-year {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            text-align: center;
+        }
+
+        .day-header {
+            padding: 1rem 0.5rem;
+            font-weight: 600;
+            color: var(--gold-accent);
+            font-size: 0.9rem;
+        }
+
+        .day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .day:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
+
+        .day.available {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .day.available:hover {
+            background: var(--gold-accent);
+            color: var(--pure-white);
+        }
+
+        .day.selected {
+            background: var(--gold-accent);
+            color: var(--pure-white);
+            font-weight: 700;
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.3);
+        }
+
+        .day.unavailable {
+            color: rgba(255, 255, 255, 0.3);
+            cursor: not-allowed;
+        }
+
+        .day-label {
+            position: absolute;
+            bottom: -1.5rem;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Notice */
+        .booking-notice {
+            background: linear-gradient(135deg, #fef3c7, #fed7aa);
+            border: 1px solid #f59e0b;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            color: #92400e;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .booking-notice i {
+            color: #f59e0b;
+            margin-right: 0.5rem;
+        }
+
+        /* Ticket Types Section */
+        .tickets-section {
+            margin-bottom: 3rem;
+        }
+
+        .ticket-type {
+            background: var(--soft-white);
+            border: 2px solid var(--light-gray);
+            border-radius: 18px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .ticket-type:hover {
+            border-color: var(--light-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .ticket-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .ticket-details h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--royal-blue);
+            margin-bottom: 0.25rem;
+        }
+
+        .ticket-details p {
+            color: var(--warm-gray);
+            font-size: 0.95rem;
+        }
+
+        .ticket-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--royal-blue);
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .quantity-btn {
+            background: var(--light-blue);
+            color: var(--pure-white);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .quantity-btn:hover {
+            background: var(--royal-blue);
+            transform: scale(1.1);
+        }
+
+        .quantity-btn:disabled {
+            background: var(--light-gray);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .quantity-display {
+            background: var(--pure-white);
+            border: 2px solid var(--light-blue);
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            color: var(--royal-blue);
+            min-width: 80px;
+            text-align: center;
+        }
+
+        /* Add-ons Section */
+        .addons-section {
+            margin-bottom: 3rem;
+        }
+
+        .addon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .addon-item {
+            background: var(--soft-white);
+            border: 2px solid var(--light-gray);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .addon-item:hover {
+            border-color: var(--light-blue);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .addon-item.selected {
+            border-color: var(--success-green);
+            background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+        }
+
+        .addon-icon {
+            font-size: 2rem;
+            color: var(--light-blue);
+            margin-bottom: 1rem;
+        }
+
+        .addon-item.selected .addon-icon {
+            color: var(--success-green);
+        }
+
+        .addon-name {
+            font-weight: 600;
+            color: var(--royal-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .addon-price {
+            color: var(--warm-gray);
+            font-size: 0.9rem;
+        }
+
+        .addon-checkmark {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            color: var(--success-green);
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .addon-item.selected .addon-checkmark {
+            opacity: 1;
+        }
+
+        /* Visitor Information Section */
+        .visitor-info-section {
+            margin-bottom: 3rem;
+        }
+
+        .visitor-form {
+            background: var(--soft-white);
+            border: 2px solid var(--light-gray);
+            border-radius: 18px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--royal-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--pure-white);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--light-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .visitor-card {
+            background: var(--pure-white);
+            border: 2px solid var(--light-blue);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .visitor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .visitor-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--royal-blue);
+        }
+
+        .visitor-type-badge {
+            background: var(--light-blue);
+            color: var(--pure-white);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* Payment Section */
+        .payment-section {
+            margin-bottom: 3rem;
+        }
+
+        .payment-method {
+            background: var(--soft-white);
+            border: 2px solid var(--light-gray);
+            border-radius: 18px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method:hover {
+            border-color: var(--light-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .payment-method.selected {
+            border-color: var(--success-green);
+            background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+        }
+
+        .payment-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .payment-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .payment-icon {
+            font-size: 1.5rem;
+            color: var(--light-blue);
+        }
+
+        .payment-method.selected .payment-icon {
+            color: var(--success-green);
+        }
+
+        .payment-name {
+            font-weight: 600;
+            color: var(--royal-blue);
+            font-size: 1.2rem;
+        }
+
+        .payment-description {
+            color: var(--warm-gray);
+            font-size: 0.9rem;
+        }
+
+        .payment-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--light-blue);
+            border-radius: 50%;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method.selected .payment-radio {
+            border-color: var(--success-green);
+        }
+
+        .payment-method.selected .payment-radio::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            background: var(--success-green);
+            border-radius: 50%;
+        }
+
+        .payment-details {
+            background: var(--pure-white);
+            border: 2px solid var(--light-gray);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .payment-method.selected .payment-details {
+            display: block;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: linear-gradient(135deg, var(--royal-blue), var(--navy-blue));
+            color: var(--pure-white);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-header {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .summary-date {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+        }
+
+        .summary-visitors {
+            margin-bottom: 1.5rem;
+        }
+
+        .visitor-summary {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .total-breakdown {
+            margin-top: 1.5rem;
+        }
+
+        .total-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .total-final {
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+            padding-top: 1rem;
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Ticket Display Section */
+        .ticket-display {
+            background: linear-gradient(135deg, var(--pure-white) 0%, #f8fafc 100%);
+            border: 3px solid var(--royal-blue);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            box-shadow: var(--shadow-large);
+        }
+
+        .ticket-display::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -15px;
+            width: 30px;
+            height: 30px;
+            background: #e6f2ff;
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+
+        .ticket-display::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -15px;
+            width: 30px;
+            height: 30px;
+            background: #e6f2ff;
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+
+        .ticket-header {
+            text-align: center;
+            border-bottom: 2px dashed var(--royal-blue);
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .ticket-logo {
+            font-size: 3rem;
+            color: var(--royal-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .ticket-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--royal-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .ticket-subtitle {
+            color: var(--warm-gray);
+            font-size: 1rem;
+        }
+
+        .ticket-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .ticket-info-group {
+            background: var(--soft-white);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid var(--light-gray);
+        }
+
+        .ticket-info-label {
+            font-weight: 600;
+            color: var(--royal-blue);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ticket-info-value {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .ticket-visitors {
+            grid-column: 1 / -1;
+        }
+
+        .visitor-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .visitor-item {
+            background: var(--pure-white);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 2px solid var(--light-blue);
+            text-align: center;
+        }
+
+        .visitor-name {
+            font-weight: 600;
+            color: var(--royal-blue);
+            margin-bottom: 0.25rem;
+        }
+
+        .visitor-age {
+            color: var(--warm-gray);
+            font-size: 0.9rem;
+        }
+
+        .ticket-footer {
+            border-top: 2px dashed var(--royal-blue);
+            padding-top: 1.5rem;
+            text-align: center;
+        }
+
+        .ticket-qr {
+            background: var(--light-gray);
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--warm-gray);
+        }
+
+        .ticket-instructions {
+            color: var(--warm-gray);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Success Section */
+        .success-section {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: var(--success-green);
+            margin-bottom: 1.5rem;
+            animation: bounce 1s ease-in-out;
+        }
+
+        .success-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--royal-blue);
+            margin-bottom: 1rem;
+        }
+
+        .success-message {
+            font-size: 1.1rem;
+            color: var(--warm-gray);
+            margin-bottom: 2rem;
+        }
+
+        .booking-id {
+            background: var(--soft-white);
+            border: 2px solid var(--light-blue);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: inline-block;
+        }
+
+        .booking-id strong {
+            color: var(--royal-blue);
+            font-size: 1.2rem;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 1.2rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold-accent), #fbbf24);
+            color: var(--pure-white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-large);
+            background: linear-gradient(135deg, #d97706, var(--gold-accent));
+        }
+
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--text-dark);
+            margin-right: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background: var(--warm-gray);
+            color: var(--pure-white);
+        }
+
+        .btn:disabled {
+            background: var(--light-gray);
+            cursor: not-allowed;
+            transform: none;
+            opacity: 0.6;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .continue-btn, .back-info-btn {
+            width: 100%;
+        }
+
+        /* Steps indicator */
+        .steps-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            color: var(--warm-gray);
+        }
+
+        .step.active {
+            color: var(--royal-blue);
+            font-weight: 600;
+        }
+
+        .step.completed {
+            color: var(--success-green);
+        }
+
+        .step-number {
+            background: var(--light-gray);
+            color: var(--warm-gray);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.5rem;
+            font-weight: 600;
+        }
+
+        .step.active .step-number {
+            background: var(--royal-blue);
+            color: var(--pure-white);
+        }
+
+        .step.completed .step-number {
+            background: var(--success-green);
+            color: var(--pure-white);
+        }
+
+        .step-separator {
+            width: 50px;
+            height: 2px;
+            background: var(--light-gray);
+            margin: 0 1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .booking-container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+
+            .booking-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .header-title {
+                font-size: 1.8rem;
+            }
+
+            .calendar-grid {
+                gap: 0.3rem;
+            }
+
+            .day {
+                font-size: 0.9rem;
+            }
+
+            .addon-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn-secondary {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+
+            .steps-indicator {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .step-separator {
+                display: none;
+            }
+
+            .ticket-body {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .visitor-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Print Styles for Ticket */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            .ticket-display,
+            .ticket-display * {
+                visibility: visible;
+            }
+            
+            .ticket-display {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <a href="#" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1 class="header-title">
+                <i class="fas fa-museum"></i>
+                Book Museum Tickets
+            </h1>
+        </div>
+    </div>
+
+    <!-- Main Booking Container -->
+    <div class="booking-container">
+        <div class="booking-card">
+            <!-- Steps Indicator -->
+            <div class="steps-indicator">
+                <div class="step active" id="step-1">
+                    <div class="step-number">1</div>
+                    <span>Select Tickets</span>
+                </div>
+                <div class="step-separator"></div>
+                <div class="step" id="step-2">
+                    <div class="step-number">2</div>
+                    <span>Visitor Details</span>
+                </div>
+                <div class="step-separator"></div>
+                <div class="step" id="step-3">
+                    <div class="step-number">3</div>
+                    <span>Payment</span>
+                </div>
+            </div>
+
+            <!-- Booking Selection Section -->
+            <div id="booking-selection">
+                <!-- Replace your calendar section with this -->
+<div class="calendar-section">
+    <h2 class="section-title">
+        <i class="fas fa-calendar-alt"></i>
+        Select Visit Date
+    </h2>
+    <div class="calendar">
+        <div class="calendar-header">
+            <div class="month-year" id="month-year-display">Loading...</div>
+            <div class="nav-buttons">
+                <button class="nav-btn" id="prev-btn" onclick="previousMonth()" title="Previous Month">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="nav-btn" id="next-btn" onclick="nextMonth()" title="Next Month">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+        <div class="calendar-grid" id="calendar-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; text-align: center; margin-top: 1rem;">
+            <!-- Calendar days will be populated here -->
+        </div>
+    </div>
+    
+    <div class="selected-date-info" id="selected-date-info" style="display: none; margin-top: 1.5rem; padding: 1.5rem; background: linear-gradient(135deg, #fef3c7, #fed7aa); border: 1px solid #f59e0b; border-radius: 15px; color: #92400e; text-align: center;">
+        <h3 style="margin: 0 0 0.5rem 0; color: #d97706; font-size: 1.1rem; font-weight: 600;">Selected Visit Date</h3>
+        <p id="selected-date-text" style="margin: 0; font-size: 0.95rem;">No date selected</p>
+    </div>
+</div>
+
+<script>
+// Simple calendar that definitely works
+let simpleCalendarInstance = null;
+let selectedVisitDate = null;
+
+function initializeSimpleCalendar() {
+    console.log('Initializing simple calendar...');
+    
+    const currentDate = new Date();
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const dayNames = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+    
+    let calendarDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    let selectedDate = null;
+    
+    function renderCalendar() {
+        console.log('Rendering calendar for:', monthNames[calendarDate.getMonth()], calendarDate.getFullYear());
+        
+        const grid = document.getElementById('calendar-grid');
+        const monthDisplay = document.getElementById('month-year-display');
+        
+        if (!grid || !monthDisplay) {
+            console.error('Calendar elements not found!');
+            return;
+        }
+        
+        // Clear grid
+        grid.innerHTML = '';
+        
+        // ✅ FIXED: Correct template literal
+        monthDisplay.textContent = `${monthNames[calendarDate.getMonth()]} ${calendarDate.getFullYear()}`;
+        
+        // Add day headers
+        dayNames.forEach(day => {
+            const header = document.createElement('div');
+            header.className = 'day-header';
+            header.textContent = day;
+            header.style.padding = '0.75rem 0';
+            header.style.fontWeight = '600';
+            header.style.color = 'var(--gold-accent)';
+            header.style.fontSize = '0.9rem';
+            grid.appendChild(header);
+        });
+        
+        // Calculate days
+        const year = calendarDate.getFullYear();
+        const month = calendarDate.getMonth();
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const daysInMonth = lastDay.getDate();
+        
+        // Get first day of week (0=Sunday, 1=Monday, etc) - convert to Monday=0
+        let firstDayWeek = firstDay.getDay();
+        firstDayWeek = firstDayWeek === 0 ? 6 : firstDayWeek - 1;
+        
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        // Add empty cells
+        for (let i = 0; i < firstDayWeek; i++) {
+            const empty = document.createElement('div');
+            empty.style.visibility = 'hidden';
+            grid.appendChild(empty);
+        }
+        
+        // Add days
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayDate = new Date(year, month, day);
+            const dayElement = document.createElement('div');
+            
+            dayElement.textContent = day;
+            dayElement.className = 'day';
+            dayElement.style.aspectRatio = '1';
+            dayElement.style.display = 'flex';
+            dayElement.style.alignItems = 'center';
+            dayElement.style.justifyContent = 'center';
+            dayElement.style.borderRadius = '12px';
+            dayElement.style.position = 'relative';
+            dayElement.style.minHeight = '50px';
+            dayElement.style.transition = 'all 0.3s ease';
+            
+            const isPast = dayDate < today;
+            const isSelected = selectedDate && dayDate.getTime() === selectedDate.getTime();
+            const isToday = dayDate.getTime() === today.getTime();
+            
+            if (isPast) {
+                dayElement.style.color = 'rgba(255, 255, 255, 0.3)';
+                dayElement.style.cursor = 'not-allowed';
+            } else {
+                dayElement.style.background = 'rgba(255, 255, 255, 0.1)';
+                dayElement.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+                dayElement.style.cursor = 'pointer';
+                
+                dayElement.addEventListener('click', function() {
+                    // Remove previous selection
+                    document.querySelectorAll('.day.selected').forEach(d => {
+                        d.classList.remove('selected');
+                        d.style.background = 'rgba(255, 255, 255, 0.1)';
+                        const label = d.querySelector('.day-label');
+                        if (label) label.remove();
+                    });
+                    
+                    // Select this day
+                    dayElement.classList.add('selected');
+                    dayElement.style.background = 'var(--gold-accent)';
+                    dayElement.style.color = 'white';
+                    dayElement.style.fontWeight = '700';
+                    dayElement.style.transform = 'scale(1.1)';
+                    
+                    const label = document.createElement('div');
+                    label.className = 'day-label';
+                    label.textContent = 'Selected';
+                    label.style.position = 'absolute';
+                    label.style.bottom = '-1.5rem';
+                    label.style.fontSize = '0.7rem';
+                    label.style.color = 'rgba(255, 255, 255, 0.7)';
+                    dayElement.appendChild(label);
+                    
+                    selectedDate = dayDate;
+                    selectedVisitDate = dayDate;
+                    
+                    // Update info
+                    const info = document.getElementById('selected-date-info');
+                    const text = document.getElementById('selected-date-text');
+                    if (info && text) {
+                        text.textContent = dayDate.toLocaleDateString('en-US', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+                        info.style.display = 'block';
+                    }
+                });
+                
+                dayElement.addEventListener('mouseenter', function() {
+                    if (!isPast && !isSelected) {
+                        dayElement.style.background = 'var(--gold-accent)';
+                        dayElement.style.transform = 'scale(1.1)';
+                    }
+                });
+                
+                dayElement.addEventListener('mouseleave', function() {
+                    if (!isPast && !isSelected) {
+                        dayElement.style.background = 'rgba(255, 255, 255, 0.1)';
+                        dayElement.style.transform = 'scale(1)';
+                    }
+                });
+            }
+            
+            if (isSelected) {
+                dayElement.classList.add('selected');
+                dayElement.style.background = 'var(--gold-accent)';
+                dayElement.style.color = 'white';
+                dayElement.style.fontWeight = '700';
+                dayElement.style.transform = 'scale(1.1)';
+                
+                const label = document.createElement('div');
+                label.className = 'day-label';
+                label.textContent = 'Selected';
+                label.style.position = 'absolute';
+                label.style.bottom = '-1.5rem';
+                label.style.fontSize = '0.7rem';
+                label.style.color = 'rgba(255, 255, 255, 0.7)';
+                dayElement.appendChild(label);
+            }
+            
+            if (isToday) {
+                dayElement.style.border = '2px solid #fbbf24';
+                dayElement.style.fontWeight = '700';
+            }
+            
+            grid.appendChild(dayElement);
+        }
+        
+        // Update navigation buttons
+        const prevBtn = document.getElementById('prev-btn');
+        const currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        const prevMonth = new Date(calendarDate.getFullYear(), calendarDate.getMonth() - 1, 1);
+        
+        if (prevBtn) {
+            prevBtn.disabled = prevMonth < currentMonth;
+            prevBtn.style.opacity = prevBtn.disabled ? '0.5' : '1';
+            prevBtn.style.cursor = prevBtn.disabled ? 'not-allowed' : 'pointer';
+        }
+    }
+    
+    // Navigation functions
+    window.previousMonth = function() {
+        const today = new Date();
+        const currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        const newDate = new Date(calendarDate.getFullYear(), calendarDate.getMonth() - 1, 1);
+        
+        if (newDate >= currentMonth) {
+            calendarDate = newDate;
+            renderCalendar();
+        }
+    };
+    
+    window.nextMonth = function() {
+        calendarDate = new Date(calendarDate.getFullYear(), calendarDate.getMonth() + 1, 1);
+        renderCalendar();
+    };
+    
+    // Initial render
+    renderCalendar();
+}
+
+// Initialize immediately and on DOM ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeSimpleCalendar);
+} else {
+    initializeSimpleCalendar();
+}
+
+// Backup initialization
+setTimeout(initializeSimpleCalendar, 1000);
+</script>
+
+
+                <!-- Notice -->
+                <div class="booking-notice">
+                    <i class="fas fa-info-circle"></i>
+                    Group tickets and special exhibitions must be booked at the Museum Reception on the day of visit.
+                </div>
+
+                <!-- Ticket Types -->
+                <div class="tickets-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-tickets-alt"></i>
+                        Select Tickets
+                    </h2>
+
+                    <div class="ticket-type">
+                        <div class="ticket-info">
+                            <div class="ticket-details">
+                                <h4>Adult</h4>
+                                <p>General admission (18 years and above)</p>
+                            </div>
+                            <div class="ticket-price">₹150/ Person</div>
+                        </div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="changeQuantity('adult', -1)">-</button>
+                            <div class="quantity-display" id="adult-qty">0</div>
+                            <button class="quantity-btn" onclick="changeQuantity('adult', 1)">+</button>
+                        </div>
+                    </div>
+
+                    <div class="ticket-type">
+                        <div class="ticket-info">
+                            <div class="ticket-details">
+                                <h4>Child</h4>
+                                <p>Children (5 - 17 years)</p>
+                            </div>
+                            <div class="ticket-price">₹80/ Person</div>
+                        </div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="changeQuantity('child', -1)">-</button>
+                            <div class="quantity-display" id="child-qty">0</div>
+                            <button class="quantity-btn" onclick="changeQuantity('child', 1)">+</button>
+                        </div>
+                    </div>
+
+                    <div class="ticket-type">
+                        <div class="ticket-info">
+                            <div class="ticket-details">
+                                <h4>Senior Citizen</h4>
+                                <p>Senior Citizens (60 years and above)</p>
+                            </div>
+                            <div class="ticket-price">₹100/ Person</div>
+                        </div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="changeQuantity('senior', -1)">-</button>
+                            <div class="quantity-display" id="senior-qty">0</div>
+                            <button class="quantity-btn" onclick="changeQuantity('senior', 1)">+</button>
+                        </div>
+                    </div>
+
+                    <div class="ticket-type">
+                        <div class="ticket-info">
+                            <div class="ticket-details">
+                                <h4>Student</h4>
+                                <p>Students with valid ID (12-25 years)</p>
+                            </div>
+                            <div class="ticket-price">₹60/ Person</div>
+                        </div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="changeQuantity('student', -1)">-</button>
+                            <div class="quantity-display" id="student-qty">0</div>
+                            <button class="quantity-btn" onclick="changeQuantity('student', 1)">+</button>
+                        </div>
+                    </div>
+
+                    <div class="ticket-type">
+                        <div class="ticket-info">
+                            <div class="ticket-details">
+                                <h4>Infant</h4>
+                                <p>Children below 5 years</p>
+                            </div>
+                            <div class="ticket-price">Free</div>
+                        </div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="changeQuantity('infant', -1)">-</button>
+                            <div class="quantity-display" id="infant-qty">0</div>
+                            <button class="quantity-btn" onclick="changeQuantity('infant', 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add-ons -->
+                <div class="addons-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-plus-circle"></i>
+                        Add-On Services
+                    </h2>
+                    <div class="addon-grid">
+                        <div class="addon-item" onclick="toggleAddon(this, 'audio-guide', 50)">
+                            <i class="fas fa-headphones addon-icon"></i>
+                            <i class="fas fa-check-circle addon-checkmark"></i>
+                            <div class="addon-name">Audio Guide</div>
+                            <div class="addon-price">₹50/ Device</div>
+                        </div>
+                        <div class="addon-item" onclick="toggleAddon(this, 'vr-experience', 100)">
+                            <i class="fas fa-vr-cardboard addon-icon"></i>
+                            <i class="fas fa-check-circle addon-checkmark"></i>
+                            <div class="addon-name">VR Experience</div>
+                            <div class="addon-price">₹100/ Person</div>
+                        </div>
+                        <div class="addon-item" onclick="toggleAddon(this, 'photography', 200)">
+                            <i class="fas fa-camera addon-icon"></i>
+                            <i class="fas fa-check-circle addon-checkmark"></i>
+                            <div class="addon-name">Photography Pass</div>
+                            <div class="addon-price">₹200/ Group</div>
+                        </div>
+                        <div class="addon-item" onclick="toggleAddon(this, 'guided-tour', 300)">
+                            <i class="fas fa-user-tie addon-icon"></i>
+                            <i class="fas fa-check-circle addon-checkmark"></i>
+                            <div class="addon-name">Guided Tour</div>
+                            <div class="addon-price">₹300/ Group</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Continue Button -->
+                <button class="btn btn-primary continue-btn" onclick="proceedToVisitorInfo()">
+                    <i class="fas fa-arrow-right"></i>
+                    Continue to Visitor Details
+                </button>
+            </div>
+
+            <!-- Visitor Information Section -->
+            <div id="visitor-info-section" style="display: none;">
+                <div class="visitor-info-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-users"></i>
+                        Visitor Information
+                    </h2>
+                    <div id="visitor-forms-container">
+                        <!-- Visitor forms will be dynamically generated here -->
+                    </div>
+                
+                    <!-- Contact Information -->
+                    <h2 class="section-title">
+                        <i class="fas fa-phone"></i>
+                        Contact Information
+                    </h2>
+                    <div class="visitor-form">
+                        <div class="form-group">
+                            <label for="contact-phone">Primary Contact Phone Number *</label>
+                            <input type="tel" id="contact-phone" placeholder="+91 98765 43210" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-email">Email Address (Optional)</label>
+                            <input type="email" id="contact-email" placeholder="your.email@example.com">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="button-group">
+                    <button class="btn btn-secondary back-info-btn" onclick="backToTicketSelection()">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Tickets
+                    </button>
+                    <button class="btn btn-primary continue-btn" onclick="proceedToPayment()">
+                        <i class="fas fa-credit-card"></i>
+                        Proceed to Payment
+                    </button>
+                </div>
+            </div>
+
+            <!-- Payment Section -->
+            <div id="payment-section" style="display: none;">
+                <!-- Order Summary -->
+                <div class="order-summary">
+                    <h2 class="summary-header">
+                        <i class="fas fa-receipt"></i>
+                        Booking Summary
+                    </h2>
+                    <div class="summary-date">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span id="summary-visit-date">17 September 2024</span>
+                    </div>
+                    <div class="summary-visitors" id="summary-visitors-list">
+                        <!-- Visitor summary will be generated here -->
+                    </div>
+                    <div class="total-breakdown">
+                        <div class="total-line">
+                            <span>Tickets Subtotal:</span>
+                            <span id="summary-tickets-total">₹0</span>
+                        </div>
+                        <div class="total-line">
+                            <span>Add-ons:</span>
+                            <span id="summary-addons-total">₹0</span>
+                        </div>
+                        <div class="total-line">
+                            <span>Taxes & Fees (18%):</span>
+                            <span id="summary-taxes-total">₹0</span>
+                        </div>
+                    </div>
+                    <div class="total-final">
+                        <span>Total Amount:</span>
+                        <span id="summary-final-total">₹0</span>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="backToVisitorInfo()">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Details
+                    </button>
+                    <button class="btn btn-primary" onclick="completeBooking()">
+                        <i class="fas fa-lock"></i>
+                        Complete Payment
+                    </button>
+                </div>
+            </div>
+
+            <!-- Success Section with Ticket Display -->
+            <div id="success-section" style="display: none;">
+                <div class="success-section">
+                    <i class="fas fa-check-circle success-icon"></i>
+                    <h2 class="success-title">Payment Successful!</h2>
+                    <p class="success-message">
+                        Your museum tickets have been successfully booked. 
+                        Here's your digital ticket:
+                    </p>
+                </div>
+
+                <!-- Digital Ticket Display -->
+                <div class="ticket-display" id="digital-ticket">
+                    <div class="ticket-header">
+                        <i class="fas fa-museum ticket-logo"></i>
+                        <h1 class="ticket-title">MuseumHub</h1>
+                        <p class="ticket-subtitle">Digital Entry Ticket</p>
+                    </div>
+                    
+                    <div class="ticket-body">
+                        <div class="ticket-info-group">
+                            <div class="ticket-info-label">Booking ID</div>
+                            <div class="ticket-info-value" id="ticket-booking-id">MUS240917001</div>
+                        </div>
+                        
+                        <div class="ticket-info-group">
+                            <div class="ticket-info-label">Visit Date</div>
+                            <div class="ticket-info-value" id="ticket-visit-date">17 September 2024</div>
+                        </div>
+                        
+                        <div class="ticket-info-group">
+                            <div class="ticket-info-label">Total Amount</div>
+                            <div class="ticket-info-value" id="ticket-total-amount">₹0</div>
+                        </div>
+                        
+                        <div class="ticket-info-group">
+                            <div class="ticket-info-label">Contact</div>
+                            <div class="ticket-info-value" id="ticket-contact">+91 98765 43210</div>
+                        </div>
+                        
+                        <div class="ticket-info-group ticket-visitors">
+                            <div class="ticket-info-label">Visitors</div>
+                            <div class="visitor-list" id="ticket-visitors-list">
+                                <!-- Visitors will be populated here -->
+                            </div>
+                        </div>
+                        
+                        <div class="ticket-info-group">
+                            <div class="ticket-info-label">Add-ons</div>
+                            <div class="ticket-info-value" id="ticket-addons">None</div>
+                        </div>
+                    </div>
+                    
+                    <div class="ticket-footer">
+                        <div class="ticket-qr">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <div class="ticket-instructions">
+                            Please show this ticket at the museum entrance.<br>
+                            Arrive 15 minutes before your visit time.<br>
+                            Museum Hours: 9:00 AM - 6:00 PM<br>
+                            Contact: +91 98765 43210
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="downloadTicket()">
+                        <i class="fas fa-download"></i>
+                        Download Ticket
+                    </button>
+                    <button class="btn btn-secondary" onclick="printTicket()">
+                        <i class="fas fa-print"></i>
+                        Print Ticket
+                    </button>
+                </div>
+            </div>
+
+            <!-- Total Section (Always Visible) -->
+            <div class="total-section">
+                <div class="total-breakdown">
+                    <div class="total-line">
+                        <span>Tickets Subtotal:</span>
+                        <span id="tickets-total">₹0</span>
+                    </div>
+                    <div class="total-line">
+                        <span>Add-ons:</span>
+                        <span id="addons-total">₹0</span>
+                    </div>
+                    <div class="total-line">
+                        <span>Taxes & Fees:</span>
+                        <span id="taxes-total">₹0</span>
+                    </div>
+                </div>
+                <div class="total-final">
+                    <span>Total Amount:</span>
+                    <span id="final-total">₹0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let quantities = {
+            adult: 0,
+            child: 0,
+            senior: 0,
+            student: 0,
+            infant: 0
+        };
+
+        let prices = {
+            adult: 150,
+            child: 80,
+            senior: 100,
+            student: 60,
+            infant: 0
+        };
+
+        let addons = {};
+        let currentStep = 1;
+        let selectedPaymentMethod = null;
+        let visitorData = [];
+
+        function changeQuantity(type, delta) {
+            quantities[type] = Math.max(0, quantities[type] + delta);
+            document.getElementById(type + '-qty').textContent = quantities[type];
+            updateTotal();
+        }
+
+        function toggleAddon(element, name, price) {
+            element.classList.toggle('selected');
+            if (addons[name]) {
+                delete addons[name];
+            } else {
+                addons[name] = price;
+            }
+            updateTotal();
+        }
+
+        function updateTotal() {
+            let ticketsTotal = 0;
+            for (let type in quantities) {
+                ticketsTotal += quantities[type] * prices[type];
+            }
+
+            let addonsTotal = Object.values(addons).reduce((sum, price) => sum + price, 0);
+            let taxes = Math.round((ticketsTotal + addonsTotal) * 0.18);
+            let finalTotal = ticketsTotal + addonsTotal + taxes;
+
+            document.getElementById('tickets-total').textContent = '₹' + ticketsTotal;
+            document.getElementById('addons-total').textContent = '₹' + addonsTotal;
+            document.getElementById('taxes-total').textContent = '₹' + taxes;
+            document.getElementById('final-total').textContent = '₹' + finalTotal;
+
+            // Update summary totals if in payment section
+            if (document.getElementById('summary-tickets-total')) {
+                document.getElementById('summary-tickets-total').textContent = '₹' + ticketsTotal;
+                document.getElementById('summary-addons-total').textContent = '₹' + addonsTotal;
+                document.getElementById('summary-taxes-total').textContent = '₹' + taxes;
+                document.getElementById('summary-final-total').textContent = '₹' + finalTotal;
+            }
+        }
+
+        function updateStepIndicator(step) {
+            for (let i = 1; i <= 3; i++) {
+                const stepElement = document.getElementById('step-' + i);
+                stepElement.classList.remove('active', 'completed');
+                
+                if (i < step) {
+                    stepElement.classList.add('completed');
+                } else if (i === step) {
+                    stepElement.classList.add('active');
+                }
+            }
+        }
+
+        function generateVisitorForms() {
+            const container = document.getElementById('visitor-forms-container');
+            container.innerHTML = '';
+            
+            let visitorCount = 1;
+            
+            for (let type in quantities) {
+                if (quantities[type] > 0) {
+                    for (let i = 0; i < quantities[type]; i++) {
+                        const visitorCard = document.createElement('div');
+                        visitorCard.className = 'visitor-card';
+                        visitorCard.innerHTML = `
+                            <div class="visitor-header">
+                                <div class="visitor-title">Visitor ${visitorCount}</div>
+                                <div class="visitor-type-badge">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="name-${visitorCount}">Full Name *</label>
+                                    <input type="text" id="name-${visitorCount}" name="visitor-name" placeholder="Enter full name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="age-${visitorCount}">Age *</label>
+                                    <input type="number" id="age-${visitorCount}" name="visitor-age" placeholder="Age" min="0" max="120" required>
+                                </div>
+                            </div>
+                        `;
+                        container.appendChild(visitorCard);
+                        visitorCount++;
+                    }
+                }
+            }
+        }
+
+        function proceedToVisitorInfo() {
+            let totalTickets = Object.values(quantities).reduce((sum, qty) => sum + qty, 0);
+            if (totalTickets === 0) {
+                alert('Please select at least one ticket to proceed.');
+                return;
+            }
+            
+            currentStep = 2;
+            updateStepIndicator(currentStep);
+            
+            document.getElementById('booking-selection').style.display = 'none';
+            document.getElementById('visitor-info-section').style.display = 'block';
+            
+            generateVisitorForms();
+        }
+
+        function backToTicketSelection() {
+            currentStep = 1;
+            updateStepIndicator(currentStep);
+            
+            document.getElementById('booking-selection').style.display = 'block';
+            document.getElementById('visitor-info-section').style.display = 'none';
+        }
+
+        function validateVisitorInfo() {
+            const nameInputs = document.querySelectorAll('input[name="visitor-name"]');
+            const ageInputs = document.querySelectorAll('input[name="visitor-age"]');
+            const contactPhone = document.getElementById('contact-phone');
+            
+            let isValid = true;
+            let errorMessages = [];
+            
+            nameInputs.forEach((input, index) => {
+                if (!input.value.trim()) {
+                    isValid = false;
+                    errorMessages.push(`Please enter name for Visitor ${index + 1}`);
+                    input.style.borderColor = '#ef4444';
+                } else {
+                    input.style.borderColor = '#e2e8f0';
+                }
+            });
+            
+            ageInputs.forEach((input, index) => {
+                if (!input.value || input.value < 0 || input.value > 120) {
+                    isValid = false;
+                    errorMessages.push(`Please enter valid age for Visitor ${index + 1}`);
+                    input.style.borderColor = '#ef4444';
+                } else {
+                    input.style.borderColor = '#e2e8f0';
+                }
+            });
+            
+            const phonePattern = /^[\+]?[0-9\s\-\(\)]{10,15}$/;
+            if (!contactPhone.value.trim() || !phonePattern.test(contactPhone.value.trim())) {
+                isValid = false;
+                errorMessages.push('Please enter a valid contact phone number');
+                contactPhone.style.borderColor = '#ef4444';
+            } else {
+                contactPhone.style.borderColor = '#e2e8f0';
+            }
+            
+            if (!isValid) {
+                alert('Please complete all required fields:\n\n' + errorMessages.join('\n'));
+                return false;
+            }
+            
+            return true;
+        }
+
+        function generateVisitorSummary() {
+            const container = document.getElementById('summary-visitors-list');
+            container.innerHTML = '';
+            
+            const nameInputs = document.querySelectorAll('input[name="visitor-name"]');
+            const ageInputs = document.querySelectorAll('input[name="visitor-age"]');
+            
+            nameInputs.forEach((nameInput, index) => {
+                const visitorDiv = document.createElement('div');
+                visitorDiv.className = 'visitor-summary';
+                visitorDiv.innerHTML = `
+                    <span>${nameInput.value} (Age: ${ageInputs[index].value})</span>
+                `;
+                container.appendChild(visitorDiv);
+            });
+        }
+
+        function generateBookingId() {
+            const date = new Date();
+            const year = date.getFullYear().toString().substr(-2);
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            return `MUS${year}${month}${day}${random}`;
+        }
+
+        function populateTicket() {
+            const bookingId = generateBookingId();
+            const selectedDate = document.querySelector('.day.selected').getAttribute('data-date');
+            const month = document.querySelector('.month-year').textContent;
+            const totalAmount = document.getElementById('final-total').textContent;
+            const contactPhone = document.getElementById('contact-phone').value;
+            
+            // Populate ticket fields
+            document.getElementById('ticket-booking-id').textContent = bookingId;
+            document.getElementById('ticket-visit-date').textContent = `${selectedDate} ${month}`;
+            document.getElementById('ticket-total-amount').textContent = totalAmount;
+            document.getElementById('ticket-contact').textContent = contactPhone;
+            
+            // Populate visitors list
+            const visitorsContainer = document.getElementById('ticket-visitors-list');
+            visitorsContainer.innerHTML = '';
+            
+            visitorData.forEach(visitor => {
+                const visitorDiv = document.createElement('div');
+                visitorDiv.className = 'visitor-item';
+                visitorDiv.innerHTML = `
+                    <div class="visitor-name">${visitor.name}</div>
+                    <div class="visitor-age">Age: ${visitor.age}</div>
+                `;
+                visitorsContainer.appendChild(visitorDiv);
+            });
+            
+            // Populate add-ons
+            const addonsList = Object.keys(addons).length > 0 
+                ? Object.keys(addons).map(addon => addon.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())).join(', ')
+                : 'None';
+            document.getElementById('ticket-addons').textContent = addonsList;
+        }
+
+        function showSuccessPage() {
+            // Store visitor data first
+            const nameInputs = document.querySelectorAll('input[name="visitor-name"]');
+            const ageInputs = document.querySelectorAll('input[name="visitor-age"]');
+            
+            visitorData = [];
+            nameInputs.forEach((nameInput, index) => {
+                visitorData.push({
+                    name: nameInput.value,
+                    age: ageInputs[index].value,
+                });
+            });
+            
+            // Hide payment section and show success
+            document.getElementById('payment-section').style.display = 'none';
+            document.getElementById('success-section').style.display = 'block';
+            
+            // Hide total section on success
+            document.querySelector('.total-section').style.display = 'none';
+            
+            // Update step indicator to show all completed
+            for (let i = 1; i <= 3; i++) {
+                const stepElement = document.getElementById('step-' + i);
+                stepElement.classList.remove('active');
+                stepElement.classList.add('completed');
+            }
+            
+            // Populate the ticket with booking details
+            populateTicket();
+        }
+
+        function proceedToPayment() {
+            if (!validateVisitorInfo()) {
+                return;
+            }
+            
+            // Hide visitor info section and update step indicator
+            currentStep = 3;
+            updateStepIndicator(currentStep);
+            document.getElementById('visitor-info-section').style.display = 'none';
+            
+            // Get total amount and contact info for Razorpay
+            const totalAmount = parseFloat(document.getElementById('final-total').textContent.replace('₹', ''));
+            const contactPhone = document.getElementById('contact-phone').value;
+            const contactEmail = document.getElementById('contact-email').value;
+
+            // Razorpay Options
+            const options = {
+                "key": "rzp_test_RIjWFnsQXZYCpe",
+                "amount": totalAmount * 100, // Amount in paise
+                "currency": "INR",
+                "name": "MuseumHub",
+                "description": "Museum Ticket Booking",
+                "image": "https://example.com/your_logo.png",
+                "handler": function (response){
+                    // This function is called on successful payment
+                    alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
+                    showSuccessPage();
+                },
+                "prefill": {
+                    "name": "Visitor",
+                    "email": contactEmail,
+                    "contact": contactPhone
+                },
+                "notes": {
+                    "address": "MuseumHub Office"
+                },
+                "theme": {
+                    "color": "#1e3a8a"
+                }
+            };
+
+            const rzp1 = new Razorpay(options);
+            rzp1.open();
+        }
+
+        function backToVisitorInfo() {
+            currentStep = 2;
+            updateStepIndicator(currentStep);
+            
+            document.getElementById('payment-section').style.display = 'none';
+            document.getElementById('visitor-info-section').style.display = 'block';
+        }
+
+        function completeBooking() {
+            // This function is now handled by Razorpay callback
+            // Kept for backward compatibility if needed
+            showSuccessPage();
+        }
+
+        function downloadTicket() {
+            const ticketElement = document.getElementById('digital-ticket');
+            const bookingId = document.getElementById('ticket-booking-id').textContent;
+            
+            // Create a more detailed text version
+            let ticketContent = `🎫 MUSEUM DIGITAL TICKET\n`;
+            ticketContent += `================================\n\n`;
+            ticketContent += `🏛️ MuseumHub - Digital Entry Ticket\n\n`;
+            ticketContent += `📋 Booking Details:\n`;
+            ticketContent += `   • Booking ID: ${document.getElementById('ticket-booking-id').textContent}\n`;
+            ticketContent += `   • Visit Date: ${document.getElementById('ticket-visit-date').textContent}\n`;
+            ticketContent += `   • Total Amount: ${document.getElementById('ticket-total-amount').textContent}\n`;
+            ticketContent += `   • Contact: ${document.getElementById('ticket-contact').textContent}\n\n`;
+            
+            ticketContent += `👥 Visitors:\n`;
+            visitorData.forEach((visitor, index) => {
+                ticketContent += `   ${index + 1}. ${visitor.name} (Age: ${visitor.age})\n`;
+            });
+            
+            ticketContent += `\n🎯 Add-ons: ${document.getElementById('ticket-addons').textContent}\n\n`;
+            
+            ticketContent += `📍 Museum Information:\n`;
+            ticketContent += `   • Address: 123 Culture Street, Art District\n`;
+            ticketContent += `   • Hours: 9:00 AM - 6:00 PM\n`;
+            ticketContent += `   • Contact: +91 98765 43210\n\n`;
+            
+            ticketContent += `⚠️ Important Instructions:\n`;
+            ticketContent += `   • Please show this ticket at the museum entrance\n`;
+            ticketContent += `   • Arrive 15 minutes before your visit time\n`;
+            ticketContent += `   • This ticket is non-refundable and non-transferable\n`;
+            ticketContent += `   • Valid for single entry only\n\n`;
+            
+            ticketContent += `Thank you for choosing MuseumHub!\n`;
+            ticketContent += `================================`;
+
+            // Create and download text file
+            const blob = new Blob([ticketContent], { type: 'text/plain;charset=utf-8' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `museum-ticket-${bookingId}.txt`;
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        function printTicket() {
+            // Focus on the ticket element and print
+            window.print();
+        }
+
+        // Calendar interaction
+        document.querySelectorAll('.day.available').forEach(day => {
+            day.addEventListener('click', function() {
+                document.querySelector('.day.selected')?.classList.remove('selected');
+                this.classList.add('selected');
+                
+                document.querySelectorAll('.day-label').forEach(label => label.remove());
+                
+                const label = document.createElement('div');
+                label.className = 'day-label';
+                label.textContent = 'Selected';
+                this.appendChild(label);
+            });
+        });
+
+        // Initialize
+        updateTotal();
+        updateStepIndicator(currentStep);
+    </script>
+</body>
+</html>

@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MuseumHub Chatbot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .chatbot-container {
+            width: 100%;
+            max-width: 400px;
+            height: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .chat-header h2 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .status-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .logged-out {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fca5a5;
+        }
+
+        .logged-in {
+            background: rgba(255, 255, 255, 0.2);
+            color: #86efac;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8fafc;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .bot-message {
+            background: white;
+            padding: 15px;
+            border-radius: 15px 15px 15px 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 90%;
+            white-space: pre-line;
+        }
+
+        .user-message {
+            background: #4f46e5;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 15px 15px 5px 15px;
+            margin-left: auto;
+            max-width: 80%;
+            text-align: right;
+        }
+
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .chat-button {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .chat-button:hover {
+            background: #3730a3;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            color: white;
+        }
+
+        .chat-input-container {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .chat-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 25px;
+            outline: none;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: #4f46e5;
+        }
+
+        .send-button {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .send-button:hover {
+            background: #3730a3;
+            transform: scale(1.05);
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 15px;
+            background: white;
+            border-radius: 15px 15px 15px 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 90%;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #cbd5e0;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% {
+                transform: scale(0);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Redirect notification styles */
+        .redirect-notification {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .redirect-text {
+            color: #0369a1;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .countdown {
+            color: #dc2626;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="chatbot-container">
+        <div class="chat-header">
+            <h2>🏛️ MuseumHub Assistant</h2>
+            <p>Your friendly museum booking guide</p>
+            <div class="status-indicator logged-out" id="loginStatus">Not Logged In</div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input-container">
+            <div class="chat-input-group">
+                <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." maxlength="500">
+                <button class="send-button" id="sendBtn">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        const AppState = {
+            isLoggedIn: false,
+            user: {
+                id: null,
+                name: null,
+                email: null
+            }
+        };
+
+        // Page URLs - Update these paths according to your file structure
+        const PAGE_URLS = {
+            login: '\login',
+            register: '\register',
+            booking: '\book_ticket',
+            tickets: '\my_tickets',
+            profile: 'profile.html',
+            home: '\home'
+        };
+
+        // Enhanced Chatbot with page redirections
+        class MuseumChatbot {
+            constructor() {
+                this.patterns = {
+                    // Greeting patterns
+                    '\\b(hello|hi|hey|good morning|good evening|start)\\b': this.handleGreeting,
+                    
+                    // Help and support
+                    '\\b(help|support|assist|what can you do)\\b': this.handleHelp,
+                    
+                    // Booking related
+                    '(book.*ticket|reserve.*ticket|buy.*ticket|want.*book|booking)': this.handleBookingInquiry,
+                    
+                    // Login/Register related
+                    '(login|log in|sign in|already registered|have account)': this.handleLoginInquiry,
+                    '(register|sign up|create account|new user|new account)': this.handleRegisterInquiry,
+                    
+                    // Ticket management
+                    '(view.*ticket|my.*ticket|see.*ticket|check.*booking)': this.handleViewTickets,
+                    '(cancel.*ticket|refund|delete.*ticket)': this.handleCancelInquiry,
+                    
+                    // Information requests
+                    '(price|cost|pricing|fee|rates|charges)': this.handlePricing,
+                    '(timing|time|hours|open|closing|schedule)': this.handleTimings,
+                    '(location|address|where|contact|phone)': this.handleContact,
+                    '(services|facilities|amenities|features)': this.handleServices,
+                    
+                    // Policies and rules
+                    '(policy|policies|rules|guidelines|terms)': this.handlePolicies,
+                    
+                    // Goodbye
+                    '\\b(bye|goodbye|see you|thanks|thank you|exit)\\b': this.handleGoodbye,
+                };
+
+                this.initializeChat();
+                this.bindEvents();
+            }
+
+            initializeChat() {
+                // Check if user is logged in (you can get this from localStorage, session, etc.)
+                this.checkLoginStatus();
+                this.showInitialMessage();
+            }
+
+            bindEvents() {
+                // Input events
+                document.getElementById('chatInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.sendMessage();
+                });
+                
+                document.getElementById('sendBtn').addEventListener('click', () => {
+                    this.sendMessage();
+                });
+            }
+
+            checkLoginStatus() {
+                // Check if user is logged in from localStorage or session
+                const userData = localStorage.getItem('museumUser');
+                if (userData) {
+                    const user = JSON.parse(userData);
+                    AppState.isLoggedIn = true;
+                    AppState.user = user;
+                    this.updateLoginStatus();
+                }
+            }
+
+            showInitialMessage() {
+                const initialButtons = AppState.isLoggedIn 
+                    ? [
+                        { id: 'book_tickets', text: '🎫 Book Tickets', url: PAGE_URLS.booking },
+                        { id: 'view_tickets', text: '📋 My Tickets', url: PAGE_URLS.tickets },
+                        { id: 'museum_info', text: '🏛️ Museum Info' },
+                        { id: 'pricing_info', text: '💰 Pricing' }
+                    ]
+                    : [
+                        { id: 'login', text: '🔐 Login', url: PAGE_URLS.login },
+                        { id: 'register', text: '✨ Register', url: PAGE_URLS.register },
+                        { id: 'museum_info', text: '🏛️ Museum Info' },
+                        { id: 'pricing_info', text: '💰 View Pricing' }
+                    ];
+
+                const welcomeText = AppState.isLoggedIn 
+                    ? `Welcome back, ${AppState.user.name}! 🏛️\n\nWhat would you like to do today?`
+                    : "Hello! Welcome to MuseumHub 🏛️\n\nTo get started, please choose an option:";
+
+                this.addBotMessage(welcomeText, initialButtons);
+            }
+
+            sendMessage() {
+                const input = document.getElementById('chatInput');
+                const message = input.value.trim();
+                
+                if (!message) return;
+
+                this.addUserMessage(message);
+                input.value = '';
+                
+                this.showTypingIndicator();
+                
+                setTimeout(() => {
+                    this.hideTypingIndicator();
+                    this.processMessage(message);
+                }, 1000);
+            }
+
+            processMessage(message) {
+                const lowerMessage = message.toLowerCase();
+                
+                // Check patterns
+                for (const [pattern, handler] of Object.entries(this.patterns)) {
+                    if (new RegExp(pattern, 'i').test(lowerMessage)) {
+                        handler.call(this, message);
+                        return;
+                    }
+                }
+                
+                // Default response
+                this.handleDefault();
+            }
+
+            // Button Handler with redirections
+            handleButtonClick(buttonId, url = null) {
+                // Add user message for button click
+                const buttonElement = document.querySelector(`[data-button-id="${buttonId}"]`);
+                const buttonText = buttonElement ? buttonElement.textContent : buttonId;
+                this.addUserMessage(buttonText);
+
+                this.showTypingIndicator();
+                
+                setTimeout(() => {
+                    this.hideTypingIndicator();
+                    
+                    if (url) {
+                        // Redirect to the specified URL
+                        this.redirectToPage(url, buttonText);
+                    } else {
+                        // Handle non-redirect buttons
+                        this.handleNonRedirectButton(buttonId);
+                    }
+                }, 800);
+            }
+
+            redirectToPage(url, buttonText) {
+                const redirectMessage = `Great! I'll take you to the ${buttonText.replace(/🔐|✨|🎫|📋|🏠|💰|🏛️|❓/g, '').trim()} page now.`;
+                
+                this.addBotMessage(redirectMessage);
+                
+                // Add redirect notification with countdown
+                setTimeout(() => {
+                    this.showRedirectNotification(url);
+                }, 1000);
+                
+                // Redirect after 3 seconds
+                setTimeout(() => {
+                    window.location.href = url;
+                }, 4000);
+            }
+
+            showRedirectNotification(url) {
+                const notificationHtml = `
+                    <div class="redirect-notification">
+                        <div class="redirect-text">🚀 Redirecting you now...</div>
+                        <div class="countdown" id="countdown">3</div>
+                        <div style="margin-top: 10px; font-size: 0.9em;">
+                            <a href="${url}" style="color: #0369a1; text-decoration: underline;">Click here if not redirected automatically</a>
+                        </div>
+                    </div>
+                `;
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message';
+                messageDiv.innerHTML = `<div class="bot-message">${notificationHtml}</div>`;
+                
+                const messagesContainer = document.getElementById('chatMessages');
+                const typingIndicator = document.getElementById('typingIndicator');
+                messagesContainer.insertBefore(messageDiv, typingIndicator);
+                this.scrollToBottom();
+                
+                // Countdown animation
+                let count = 3;
+                const countdownElement = document.getElementById('countdown');
+                const countdownInterval = setInterval(() => {
+                    count--;
+                    if (countdownElement) {
+                        countdownElement.textContent = count;
+                    }
+                    if (count <= 0) {
+                        clearInterval(countdownInterval);
+                    }
+                }, 1000);
+            }
+
+            handleNonRedirectButton(buttonId) {
+                switch (buttonId) {
+                    case 'pricing_info':
+                        this.handlePricing();
+                        break;
+                    case 'museum_info':
+                        this.handleMuseumInfo();
+                        break;
+                    case 'main_menu':
+                        this.showInitialMessage();
+                        break;
+                    case 'help':
+                        this.handleHelp();
+                        break;
+                    default:
+                        this.handleDefault();
+                }
+            }
+
+            // Intent Handlers
+            handleGreeting() {
+                if (AppState.isLoggedIn) {
+                    this.addBotMessage(
+                        `Hello again, ${AppState.user.name}! 👋\n\nWhat can I help you with today?`,
+                        [
+                            { id: 'book_tickets', text: '🎫 Book Tickets', url: PAGE_URLS.booking },
+                            { id: 'view_tickets', text: '📋 My Tickets', url: PAGE_URLS.tickets },
+                            { id: 'main_menu', text: '🏠 Main Menu' }
+                        ]
+                    );
+                } else {
+                    this.showInitialMessage();
+                }
+            }
+
+            handleBookingInquiry() {
+                if (AppState.isLoggedIn) {
+                    this.addBotMessage(
+                        "Perfect! I'll take you to our booking page where you can select your tickets and preferred date.",
+                        [{ id: 'book_tickets', text: '🎫 Go to Booking Page', url: PAGE_URLS.booking }]
+                    );
+                } else {
+                    this.addBotMessage(
+                        "To book tickets, you need to login first. Would you like to login or create an account?",
+                        [
+                            { id: 'login', text: '🔐 Login', url: PAGE_URLS.login },
+                            { id: 'register', text: '✨ Create Account', url: PAGE_URLS.register }
+                        ]
+                    );
+                }
+            }
+
+            handleLoginInquiry() {
+                this.addBotMessage(
+                    "I'll take you to the login page where you can sign in to your account.",
+                    [{ id: 'login', text: '🔐 Go to Login Page', url: PAGE_URLS.login }]
+                );
+            }
+
+            handleRegisterInquiry() {
+                this.addBotMessage(
+                    "Let's create your account! I'll take you to the registration page.",
+                    [{ id: 'register', text: '✨ Go to Registration Page', url: PAGE_URLS.register }]
+                );
+            }
+
+            handleViewTickets() {
+                if (AppState.isLoggedIn) {
+                    this.addBotMessage(
+                        "I'll take you to your tickets page where you can view, download, or manage your bookings.",
+                        [{ id: 'view_tickets', text: '📋 View My Tickets', url: PAGE_URLS.tickets }]
+                    );
+                } else {
+                    this.addBotMessage(
+                        "Please login first to view your tickets.",
+                        [{ id: 'login', text: '🔐 Login', url: PAGE_URLS.login }]
+                    );
+                }
+            }
+
+            handleCancelInquiry() {
+                this.addBotMessage(
+                    "I can help you with ticket cancellation. Please note our cancellation policy:\n\n• Cancellation allowed within 48 hours of booking\n• No refund if you miss your scheduled visit\n• Processing may take 3-5 business days\n\nWould you like to view your tickets?",
+                    AppState.isLoggedIn ? 
+                    [{ id: 'view_tickets', text: '📋 View My Tickets', url: PAGE_URLS.tickets }] :
+                    [{ id: 'login', text: '🔐 Login First', url: PAGE_URLS.login }]
+                );
+            }
+
+            handlePricing() {
+                const pricingText = `Here's our current pricing:
+
+🎫 **Ticket Prices:**
+• Adult (18+): ₹150
+• Child (5-17): ₹80
+• Senior Citizen (60+): ₹100
+• Student (with ID): ₹60
+• Infant (below 5): Free
+
+🎯 **Add-on Services:**
+• Audio Guide: ₹50/device
+• VR Experience: ₹100/person
+• Photography Pass: ₹200/group
+• Guided Tour: ₹300/group`;
+
+                this.addBotMessage(pricingText, [
+                    { id: 'book_tickets', text: '🎫 Book Now', url: AppState.isLoggedIn ? PAGE_URLS.booking : PAGE_URLS.login },
+                    { id: 'main_menu', text: '🏠 Main Menu' }
+                ]);
+            }
+
+            handleTimings() {
+                const timingText = `🕒 **Museum Hours:**
+• Daily: 9:00 AM - 6:00 PM
+• Last entry: 5:30 PM
+• Closed on national holidays
+
+💻 **Online Services:**
+• Ticket booking: Available 24/7
+• Customer support: 9:00 AM - 9:00 PM`;
+
+                this.addBotMessage(timingText, [
+                    { id: 'book_tickets', text: '🎫 Book Tickets', url: AppState.isLoggedIn ? PAGE_URLS.booking : PAGE_URLS.login },
+                    { id: 'main_menu', text: '🏠 Main Menu' }
+                ]);
+            }
+
+            handleContact() {
+                const contactText = `📍 **Museum Location & Contact:**
+
+🏛️ MuseumHub
+123 Culture Street, Art District
+City, State - 123456
+
+📞 Phone: +91 98765 43210
+📧 Email: info@museumhub.com
+🌐 Website: www.museumhub.com`;
+
+                this.addBotMessage(contactText, [
+                    { id: 'book_tickets', text: '🎫 Book Tickets', url: AppState.isLoggedIn ? PAGE_URLS.booking : PAGE_URLS.login },
+                    { id: 'main_menu', text: '🏠 Main Menu' }
+                ]);
+            }
+
+            handleMuseumInfo() {
+                const infoText = `🏛️ **Museum Information:**
+
+📍 **Location:** 123 Culture Street, Art District
+🕒 **Hours:** 9:00 AM - 6:00 PM (Daily)
+📞 **Contact:** +91 98765 43210
+
+✨ **Facilities:**
+• Audio guides in multiple languages
+• VR experiences
+• Photography allowed
+• Wheelchair accessible
+• Gift shop & Cafeteria
+• Guided tours available`;
+
+                this.addBotMessage(infoText, [
+                    { id: 'book_tickets', text: '🎫 Book Tickets', url: AppState.isLoggedIn ? PAGE_URLS.booking : PAGE_URLS.login },
+                    { id: 'main_menu', text: '🏠 Main Menu' }
+                ]);
+            }
+
+            handleServices() {
+                const servicesText = `🏛️ **Our Services:**
+
+✅ **Available Services:**
+• Online ticket booking
+• Audio guides in multiple languages
+• VR experiences
+• Guided tours
+• Photography permissions
+• Wheelchair accessibility
+• Gift shop
+• Cafeteria
+
+🎯 **Digital Services:**
+• Mobile tickets
+• Online cancellation
+• Booking history
+• Email notifications`;
+
+                this.addBotMessage(servicesText, [
+                    { id: 'book_tickets', text: '🎫 Book Tickets', url: AppState.isLoggedIn ? PAGE_URLS.booking : PAGE_URLS.login },
+                    { id: 'main_menu', text: '🏠 Main Menu' }
+                ]);
+            }
+
+            handlePolicies() {
+                const policiesText = `📋 **Museum Policies:**
+
+🔸 **Booking Rules:**
+• Minimum age for booking: 18 years
+• One booking per person at a time
+• Valid ID required at entry
+
+🔸 **Cancellation Policy:**
+• Cancel within 48 hours of booking
+• No refund for missed visits
+• Processing time: 3-5 business days
+
+🔸 **Visit Guidelines:**
+• Arrive 15 minutes before your slot
+• No outside food or drinks
+• Photography rules apply
+• Follow museum etiquette`;
+
+                this.addBotMessage(policiesText, [
+                    { id: 'book_tickets', text: '🎫 Book Tickets', url: AppState.isLoggedIn ? PAGE_URLS.booking : PAGE_URLS.login },
+                    { id: 'main_menu', text: '🏠 Main Menu' }
+                ]);
+            }
+
+            handleHelp() {
+                const helpText = `I can help you with:
+
+• 🎫 **Ticket Booking** - Book museum tickets online
+• 📋 **Manage Bookings** - View, download, or cancel tickets
+• 💰 **Pricing Info** - Check current ticket prices
+• 🏛️ **Museum Details** - Hours, location, facilities
+• 📞 **Contact Info** - Get in touch with us
+• 📋 **Policies** - Booking and cancellation policies
+
+What would you like to know more about?`;
+
+                this.addBotMessage(helpText, [
+                    { id: 'book_tickets', text: '🎫 Book Tickets', url: AppState.isLoggedIn ? PAGE_URLS.booking : PAGE_URLS.login },
+                    { id: 'pricing_info', text: '💰 Pricing' },
+                    { id: 'museum_info', text: '🏛️ Museum Info' }
+                ]);
+            }
+
+            handleGoodbye() {
+                const goodbyes = [
+                    "Thank you for visiting MuseumHub! Have a wonderful day! 🏛️",
+                    "Goodbye! We hope to see you at the museum soon! 👋",
+                    "Thanks for chatting! Enjoy your museum experience! ✨"
+                ];
+                
+                const randomGoodbye = goodbyes[Math.floor(Math.random() * goodbyes.length)];
+                
+                this.addBotMessage(randomGoodbye, [
+                    { id: 'main_menu', text: '🏠 Start Over' },
+                    { id: 'book_tickets', text: '🎫 Quick Book', url: AppState.isLoggedIn ? PAGE_URLS.booking : PAGE_URLS.login }
+                ]);
+            }
+
+            handleDefault() {
+                this.addBotMessage(
+                    "I'm not sure about that, but I'm here to help! What would you like to do?",
+                    [
+                        { id: 'book_tickets', text: '🎫 Book Tickets', url: AppState.isLoggedIn ? PAGE_URLS.booking : PAGE_URLS.login },
+                        { id: 'pricing_info', text: '💰 Pricing' },
+                        { id: 'museum_info', text: '🏛️ Museum Info' },
+                        { id: 'help', text: '❓ Help' }
+                    ]
+                );
+            }
+
+            // UI Methods
+            addUserMessage(text) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message';
+                messageDiv.innerHTML = `<div class="user-message">${text}</div>`;
+                
+                const messagesContainer = document.getElementById('chatMessages');
+                const typingIndicator = document.getElementById('typingIndicator');
+                messagesContainer.insertBefore(messageDiv, typingIndicator);
+                this.scrollToBottom();
+            }
+
+            addBotMessage(text, buttons = []) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message';
+                
+                let buttonsHtml = '';
+                if (buttons.length > 0) {
+                    buttonsHtml = '<div class="button-container">';
+                    buttons.forEach(button => {
+                        if (button.url) {
+                            buttonsHtml += `<button class="chat-button" data-button-id="${button.id}" onclick="chatbot.handleButtonClick('${button.id}', '${button.url}')">${button.text}</button>`;
+                        } else {
+                            buttonsHtml += `<button class="chat-button" data-button-id="${button.id}" onclick="chatbot.handleButtonClick('${button.id}')">${button.text}</button>`;
+                        }
+                    });
+                    buttonsHtml += '</div>';
+                }
+                
+                messageDiv.innerHTML = `
+                    <div class="bot-message">
+                        ${text}
+                        ${buttonsHtml}
+                    </div>
+                `;
+                
+                const messagesContainer = document.getElementById('chatMessages');
+                const typingIndicator = document.getElementById('typingIndicator');
+                messagesContainer.insertBefore(messageDiv, typingIndicator);
+                this.scrollToBottom();
+            }
+
+            showTypingIndicator() {
+                document.getElementById('typingIndicator').style.display = 'block';
+                this.scrollToBottom();
+            }
+
+            hideTypingIndicator() {
+                document.getElementById('typingIndicator').style.display = 'none';
+            }
+
+            scrollToBottom() {
+                const messagesContainer = document.getElementById('chatMessages');
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            updateLoginStatus() {
+                const statusElement = document.getElementById('loginStatus');
+                if (AppState.isLoggedIn) {
+                    statusElement.textContent = `${AppState.user.name}`;
+                    statusElement.className = 'status-indicator logged-in';
+                } else {
+                    statusElement.textContent = 'Not Logged In';
+                    statusElement.className = 'status-indicator logged-out';
+                }
+            }
+        }
+
+        // Initialize Chatbot
+        let chatbot;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            chatbot = new MuseumChatbot();
+        });
+
+        // Function to be called from other pages to update login status
+        function updateChatbotLoginStatus(userData) {
+            if (userData) {
+                AppState.isLoggedIn = true;
+                AppState.user = userData;
+                localStorage.setItem('museumUser', JSON.stringify(userData));
+            } else {
+                AppState.isLoggedIn = false;
+                AppState.user = { id: null, name: null, email: null };
+                localStorage.removeItem('museumUser');
+            }
+            
+            if (chatbot) {
+                chatbot.updateLoginStatus();
+            }
+        }
+    </script>
+</body>
+</html>

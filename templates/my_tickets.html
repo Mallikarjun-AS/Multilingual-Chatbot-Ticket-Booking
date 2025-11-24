@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Tickets - MuseumHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --royal-blue: #1e3a8a;
+            --navy-blue: #1e40af;
+            --light-blue: #3b82f6;
+            --accent-blue: #60a5fa;
+            --pure-white: #ffffff;
+            --soft-white: #f8fafc;
+            --light-gray: #e2e8f0;
+            --text-dark: #1e293b;
+            --gold-accent: #d97706;
+            --success-green: #059669;
+            --warm-gray: #64748b;
+            --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-large: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--soft-white) 0%, #e6f2ff 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--royal-blue) 0%, var(--navy-blue) 100%);
+            padding: 1.5rem 2rem;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back-btn {
+            color: var(--pure-white);
+            font-size: 1.5rem;
+            text-decoration: none;
+            padding: 0.75rem;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-3px);
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--pure-white);
+        }
+
+        .header-title i {
+            color: var(--gold-accent);
+            margin-right: 1rem;
+        }
+
+        /* Main Container */
+        .tickets-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--royal-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title p {
+            color: var(--warm-gray);
+            font-size: 1.1rem;
+        }
+
+        /* Ticket Display Section */
+        .ticket-display {
+            background: linear-gradient(135deg, var(--pure-white) 0%, #f8fafc 100%);
+            border: 3px solid var(--royal-blue);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            box-shadow: var(--shadow-large);
+        }
+
+        .ticket-display::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -15px;
+            width: 30px;
+            height: 30px;
+            background: #e6f2ff;
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+
+        .ticket-display::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -15px;
+            width: 30px;
+            height: 30px;
+            background: #e6f2ff;
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+
+        .ticket-header {
+            text-align: center;
+            border-bottom: 2px dashed var(--royal-blue);
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .ticket-logo {
+            font-size: 3rem;
+            color: var(--royal-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .ticket-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--royal-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .ticket-subtitle {
+            color: var(--warm-gray);
+            font-size: 1rem;
+        }
+
+        .ticket-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .ticket-info-group {
+            background: var(--soft-white);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid var(--light-gray);
+        }
+
+        .ticket-info-label {
+            font-weight: 600;
+            color: var(--royal-blue);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ticket-info-value {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .ticket-visitors {
+            grid-column: 1 / -1;
+        }
+
+        .visitor-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .visitor-item {
+            background: var(--pure-white);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 2px solid var(--light-blue);
+            text-align: center;
+        }
+
+        .visitor-name {
+            font-weight: 600;
+            color: var(--royal-blue);
+            margin-bottom: 0.25rem;
+        }
+
+        .visitor-age {
+            color: var(--warm-gray);
+            font-size: 0.9rem;
+        }
+
+        .ticket-footer {
+            border-top: 2px dashed var(--royal-blue);
+            padding-top: 1.5rem;
+            text-align: center;
+        }
+
+        .ticket-qr {
+            background: var(--light-gray);
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--warm-gray);
+        }
+
+        .ticket-instructions {
+            color: var(--warm-gray);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Ticket Actions */
+        .ticket-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold-accent), #fbbf24);
+            color: var(--pure-white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-large);
+            background: linear-gradient(135deg, #d97706, var(--gold-accent));
+        }
+
+        .btn-secondary {
+            background: var(--light-blue);
+            color: var(--pure-white);
+        }
+
+        .btn-secondary:hover {
+            background: var(--royal-blue);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--royal-blue);
+            border: 2px solid var(--royal-blue);
+        }
+
+        .btn-outline:hover {
+            background: var(--royal-blue);
+            color: var(--pure-white);
+            transform: translateY(-2px);
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .status-active {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            color: var(--success-green);
+            border: 1px solid var(--success-green);
+        }
+
+        .status-used {
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            color: var(--warm-gray);
+            border: 1px solid var(--warm-gray);
+        }
+
+        .status-expired {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: #dc2626;
+            border: 1px solid #dc2626;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--warm-gray);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            color: var(--light-gray);
+        }
+
+        .empty-state h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--royal-blue);
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .tickets-container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+
+            .ticket-display {
+                padding: 2rem 1.5rem;
+            }
+
+            .header-title {
+                font-size: 1.8rem;
+            }
+
+            .ticket-body {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .visitor-list {
+                grid-template-columns: 1fr;
+            }
+
+            .ticket-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+
+        /* Print Styles for Ticket */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            .ticket-display,
+            .ticket-display * {
+                visibility: visible;
+            }
+            
+            .ticket-display {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+
+            .ticket-actions {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <a href="#" class="back-btn" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1 class="header-title">
+                <i class="fas fa-ticket-alt"></i>
+                My Tickets
+            </h1>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="tickets-container">
+        <div class="page-title">
+            <h2>Your Museum Tickets</h2>
+            <p>View and manage your booked museum tickets</p>
+        </div>
+
+        <!-- Sample Ticket - Replace with dynamic content -->
+        <div class="ticket-wrapper">
+            <div class="status-badge status-active">
+                <i class="fas fa-check-circle"></i>
+                Active Ticket
+            </div>
+
+            <!-- Digital Ticket Display -->
+            <div class="ticket-display" id="digital-ticket">
+                <div class="ticket-header">
+                    <i class="fas fa-museum ticket-logo"></i>
+                    <h1 class="ticket-title">MuseumHub</h1>
+                    <p class="ticket-subtitle">Digital Entry Ticket</p>
+                </div>
+                
+                <div class="ticket-body">
+                    <div class="ticket-info-group">
+                        <div class="ticket-info-label">Booking ID</div>
+                        <div class="ticket-info-value" id="ticket-booking-id">MUS240917001</div>
+                    </div>
+                    
+                    <div class="ticket-info-group">
+                        <div class="ticket-info-label">Visit Date</div>
+                        <div class="ticket-info-value" id="ticket-visit-date">25 September 2024</div>
+                    </div>
+                    
+                    <div class="ticket-info-group">
+                        <div class="ticket-info-label">Total Amount</div>
+                        <div class="ticket-info-value" id="ticket-total-amount">₹680</div>
+                    </div>
+                    
+                    <div class="ticket-info-group">
+                        <div class="ticket-info-label">Contact</div>
+                        <div class="ticket-info-value" id="ticket-contact">+91 98765 43210</div>
+                    </div>
+                    
+                    <div class="ticket-info-group ticket-visitors">
+                        <div class="ticket-info-label">Visitors</div>
+                        <div class="visitor-list" id="ticket-visitors-list">
+                            <div class="visitor-item">
+                                <div class="visitor-name">John Doe</div>
+                                <div class="visitor-age">Age: 32</div>
+                            </div>
+                            <div class="visitor-item">
+                                <div class="visitor-name">Jane Doe</div>
+                                <div class="visitor-age">Age: 28</div>
+                            </div>
+                            <div class="visitor-item">
+                                <div class="visitor-name">Little Doe</div>
+                                <div class="visitor-age">Age: 8</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="ticket-info-group">
+                        <div class="ticket-info-label">Add-ons</div>
+                        <div class="ticket-info-value" id="ticket-addons">Audio Guide, Photography Pass</div>
+                    </div>
+                </div>
+                
+                <div class="ticket-footer">
+                    <div class="ticket-qr">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <div class="ticket-instructions">
+                        Please show this ticket at the museum entrance.<br>
+                        Arrive 15 minutes before your visit time.<br>
+                        Museum Hours: 9:00 AM - 6:00 PM<br>
+                        Contact: +91 98765 43210
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ticket Actions -->
+            <div class="ticket-actions">
+                <button class="btn btn-primary" onclick="downloadTicket()">
+                    <i class="fas fa-download"></i>
+                    Download Ticket
+                </button>
+                <button class="btn btn-secondary" onclick="printTicket()">
+                    <i class="fas fa-print"></i>
+                    Print Ticket
+                </button>
+                <button class="btn btn-outline" onclick="shareTicket()">
+                    <i class="fas fa-share"></i>
+                    Share Ticket
+                </button>
+            </div>
+        </div>
+
+        <!-- Sample for multiple tickets - you can add more ticket-wrapper divs -->
+        <div class="ticket-wrapper" style="margin-top: 3rem;">
+            <div class="status-badge status-used">
+                <i class="fas fa-check"></i>
+                Used
+            </div>
+
+            <div class="ticket-display">
+                <div class="ticket-header">
+                    <i class="fas fa-museum ticket-logo"></i>
+                    <h1 class="ticket-title">MuseumHub</h1>
+                    <p class="ticket-subtitle">Digital Entry Ticket</p>
+                </div>
+                
+                <div class="ticket-body">
+                    <div class="ticket-info-group">
+                        <div class="ticket-info-label">Booking ID</div>
+                        <div class="ticket-info-value">MUS240915002</div>
+                    </div>
+                    
+                    <div class="ticket-info-group">
+                        <div class="ticket-info-label">Visit Date</div>
+                        <div class="ticket-info-value">15 September 2024</div>
+                    </div>
+                    
+                    <div class="ticket-info-group">
+                        <div class="ticket-info-label">Total Amount</div>
+                        <div class="ticket-info-value">₹300</div>
+                    </div>
+                    
+                    <div class="ticket-info-group">
+                        <div class="ticket-info-label">Contact</div>
+                        <div class="ticket-info-value">+91 98765 43210</div>
+                    </div>
+                    
+                    <div class="ticket-info-group ticket-visitors">
+                        <div class="ticket-info-label">Visitors</div>
+                        <div class="visitor-list">
+                            <div class="visitor-item">
+                                <div class="visitor-name">Alex Smith</div>
+                                <div class="visitor-age">Age: 25</div>
+                            </div>
+                            <div class="visitor-item">
+                                <div class="visitor-name">Sam Smith</div>
+                                <div class="visitor-age">Age: 22</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="ticket-info-group">
+                        <div class="ticket-info-label">Add-ons</div>
+                        <div class="ticket-info-value">None</div>
+                    </div>
+                </div>
+                
+                <div class="ticket-footer">
+                    <div class="ticket-qr">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <div class="ticket-instructions">
+                        This ticket has been used for entry.<br>
+                        Visit completed on 15 September 2024<br>
+                        Thank you for visiting MuseumHub!
+                    </div>
+                </div>
+            </div>
+
+            <div class="ticket-actions">
+                <button class="btn btn-outline" onclick="downloadTicket()">
+                    <i class="fas fa-download"></i>
+                    Download Receipt
+                </button>
+            </div>
+        </div>
+
+        <!-- Empty State (show when no tickets) -->
+        <!-- 
+        <div class="empty-state">
+            <i class="fas fa-ticket-alt"></i>
+            <h3>No Tickets Found</h3>
+            <p>You haven't booked any museum tickets yet.</p>
+            <a href="book-tickets.html" class="btn btn-primary">
+                <i class="fas fa-plus"></i>
+                Book Your First Ticket
+            </a>
+        </div>
+        -->
+    </div>
+
+    <script>
+        function goBack() {
+            // You can customize this to navigate to your dashboard or main page
+            window.history.back();
+        }
+
+        function downloadTicket() {
+            const activeTicket = document.querySelector('.status-active').closest('.ticket-wrapper').querySelector('.ticket-display');
+            const bookingId = activeTicket.querySelector('#ticket-booking-id')?.textContent || 
+                            activeTicket.querySelector('.ticket-info-value').textContent;
+            
+            // Get ticket data from the first ticket
+            const visitDate = activeTicket.querySelector('#ticket-visit-date')?.textContent || 
+                            activeTicket.querySelectorAll('.ticket-info-value')[1].textContent;
+            const totalAmount = activeTicket.querySelector('#ticket-total-amount')?.textContent || 
+                              activeTicket.querySelectorAll('.ticket-info-value')[2].textContent;
+            const contact = activeTicket.querySelector('#ticket-contact')?.textContent || 
+                          activeTicket.querySelectorAll('.ticket-info-value')[3].textContent;
+            const addons = activeTicket.querySelector('#ticket-addons')?.textContent || 
+                         activeTicket.querySelectorAll('.ticket-info-value')[5]?.textContent || 'None';
+
+            // Get visitor data
+            const visitorElements = activeTicket.querySelectorAll('.visitor-item');
+            let visitorsText = '';
+            visitorElements.forEach((visitor, index) => {
+                const name = visitor.querySelector('.visitor-name').textContent;
+                const age = visitor.querySelector('.visitor-age').textContent;
+                visitorsText += `   ${index + 1}. ${name} (${age})\n`;
+            });
+            
+            let ticketContent = `🎫 MUSEUM DIGITAL TICKET\n`;
+            ticketContent += `================================\n\n`;
+            ticketContent += `🏛️ MuseumHub - Digital Entry Ticket\n\n`;
+            ticketContent += `📋 Booking Details:\n`;
+            ticketContent += `   • Booking ID: ${bookingId}\n`;
+            ticketContent += `   • Visit Date: ${visitDate}\n`;
+            ticketContent += `   • Total Amount: ${totalAmount}\n`;
+            ticketContent += `   • Contact: ${contact}\n\n`;
+            
+            ticketContent += `👥 Visitors:\n`;
+            ticketContent += visitorsText;
+            
+            ticketContent += `\n🎯 Add-ons: ${addons}\n\n`;
+            
+            ticketContent += `📍 Museum Information:\n`;
+            ticketContent += `   • Address: 123 Culture Street, Art District\n`;
+            ticketContent += `   • Hours: 9:00 AM - 6:00 PM\n`;
+            ticketContent += `   • Contact: +91 98765 43210\n\n`;
+            
+            ticketContent += `⚠️ Important Instructions:\n`;
+            ticketContent += `   • Please show this ticket at the museum entrance\n`;
+            ticketContent += `   • Arrive 15 minutes before your visit time\n`;
+            ticketContent += `   • This ticket is non-refundable and non-transferable\n`;
+            ticketContent += `   • Valid for single entry only\n\n`;
+            
+            ticketContent += `Thank you for choosing MuseumHub!\n`;
+            ticketContent += `================================`;
+
+            // Create and download file
+            const blob = new Blob([ticketContent], { type: 'text/plain;charset=utf-8' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `museum-ticket-${bookingId}.txt`;
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        function printTicket() {
+            window.print();
+        }
+
+        function shareTicket() {
+            const bookingId = document.querySelector('#ticket-booking-id').textContent;
+            const visitDate = document.querySelector('#ticket-visit-date').textContent;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Museum Ticket - MuseumHub',
+                    text: `My museum ticket for ${visitDate}. Booking ID: ${bookingId}`,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback: copy to clipboard
+                const shareText = `Check out my museum ticket!\nBooking ID: ${bookingId}\nVisit Date: ${visitDate}\nMuseumHub - Digital Museum Experience`;
+                navigator.clipboard.writeText(shareText).then(() => {
+                    alert('Ticket details copied to clipboard!');
+                });
+            }
+        }
+
+        // Function to update ticket data dynamically (you can call this with your data)
+        function updateTicketData(ticketData) {
+            document.getElementById('ticket-booking-id').textContent = ticketData.bookingId;
+            document.getElementById('ticket-visit-date').textContent = ticketData.visitDate;
+            document.getElementById('ticket-total-amount').textContent = ticketData.totalAmount;
+            document.getElementById('ticket-contact').textContent = ticketData.contact;
+            document.getElementById('ticket-addons').textContent = ticketData.addons;
+            
+            // Update visitors
+            const visitorsContainer = document.getElementById('ticket-visitors-list');
+            visitorsContainer.innerHTML = '';
+            ticketData.visitors.forEach(visitor => {
+                const visitorDiv = document.createElement('div');
+                visitorDiv.className = 'visitor-item';
+                visitorDiv.innerHTML = `
+                    <div class="visitor-name">${visitor.name}</div>
+                    <div class="visitor-age">Age: ${visitor.age}</div>
+                `;
+                visitorsContainer.appendChild(visitorDiv);
+            });
+        }
+
+        // Example of how to use the update function:
+        // updateTicketData({
+        //     bookingId: 'MUS240922003',
+        //     visitDate: '25 September 2024',
+        //     totalAmount: '₹450',
+        //     contact: '+91 98765 43210',
+        //     addons: 'Audio Guide, VR Experience',
+        //     visitors: [
+        //         { name: 'Your Name', age: 30 },
+        //         { name: 'Partner Name', age: 28 }
+        //     ]
+        // });
+    </script>
+</body>
+</html>

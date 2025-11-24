@@ -1,0 +1,115 @@
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;700&display=swap');
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #1e3a8a, #1e40af);
+        color: #e5e5e5;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    body::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%231e3a8a" opacity="0.1"/><path d="M0,0 L100,0 L100,100 L0,100 Z" fill="%231e40af" opacity="0.1"/></svg>');
+        background-size: 200px;
+        opacity: 0.2;
+        animation: subtlePattern 30s linear infinite;
+    }
+
+    @keyframes subtlePattern {
+        from { background-position: 0 0; }
+        to { background-position: 200px 200px; }
+    }
+
+    .container {
+        max-width: 900px;
+        width: 100%;
+        text-align: center;
+        z-index: 1;
+    }
+
+    h1, h2, h3 {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 0.5rem;
+        position: relative;
+        display: inline-block;
+        padding-bottom: 0.5rem;
+    }
+
+    h2::after, h3::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        height: 2px;
+        background: linear-gradient(to right, transparent, #d97706, transparent);
+    }
+
+    p {
+        color: #d1d5db;
+        line-height: 1.6;
+        margin-top: 0;
+    }
+
+    .modern-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 1rem;
+        padding: 2.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+
+    .modern-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .modern-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .modern-card i {
+        color: #d97706;
+        margin-right: 0.5rem;
+        font-size: 1.5rem;
+    }
+</style>
+
+<div class="container">
+    <div class="modern-card">
+        <h2><i class="fas fa-info-circle"></i> About MuseumHub</h2>
+        <p>MuseumHub is dedicated to revolutionizing the museum experience with immersive 3D exhibits, multilingual support, and AI-powered assistance. Our mission is to make art and history accessible, engaging, and interactive for everyone.</p>
+    </div>
+
+    <div class="modern-grid">
+        <div class="modern-card">
+            <h3><i class="fas fa-users"></i> Our Team</h3>
+            <p>We are a passionate group of technologists, historians, and artists working together to bring the best of culture and technology to the world.</p>
+        </div>
+        <div class="modern-card">
+            <h3><i class="fas fa-globe"></i> Our Vision</h3>
+            <p>To create a global platform where anyone can explore, learn, and connect with the wonders of museums from anywhere in the world.</p>
+        </div>
+    </div>
+</div>

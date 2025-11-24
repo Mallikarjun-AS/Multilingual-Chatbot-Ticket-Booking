@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - MuseumHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --royal-blue: #1e3a8a;
+            --navy-blue: #1e40af;
+            --light-blue: #3b82f6;
+            --accent-blue: #60a5fa;
+            --pure-white: #ffffff;
+            --soft-white: #f8fafc;
+            --light-gray: #e2e8f0;
+            --text-dark: #1e293b;
+            --gold-accent: #d97706;
+            --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-large: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--soft-white) 0%, #e6f2ff 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .top-nav {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            gap: 1rem;
+            animation: fadeInUp 1s ease-out 0.6s both;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 50px;
+            padding: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .nav-btn.nav-link {
+            background: transparent;
+            color: var(--pure-white);
+            border: 2px solid transparent;
+        }
+
+        .nav-btn.nav-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        .nav-btn.login {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--pure-white);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-btn.login:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .nav-btn.register {
+            background: linear-gradient(45deg, var(--gold-accent), #fbbf24);
+            color: var(--pure-white);
+            border: 2px solid transparent;
+            box-shadow: var(--shadow-light);
+        }
+
+        .nav-btn.register:hover {
+            background: linear-gradient(45deg, #d97706, var(--gold-accent));
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--royal-blue) 0%, var(--navy-blue) 50%, var(--light-blue) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            font-weight: 800;
+            color: var(--pure-white);
+            margin-bottom: 1.5rem;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero-title i {
+            color: var(--gold-accent);
+            margin-right: 1rem;
+            font-size: 4rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 3rem;
+            font-weight: 300;
+            animation: fadeInUp 1s ease-out 0.2s both;
+            line-height: 1.7;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .royal-btn {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .royal-btn.primary {
+            background: linear-gradient(45deg, var(--gold-accent), #fbbf24);
+            color: var(--pure-white);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .royal-btn.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-large);
+            background: linear-gradient(45deg, #d97706, var(--gold-accent));
+        }
+
+        .royal-btn.secondary {
+            background: transparent;
+            color: var(--pure-white);
+            border: 2px solid var(--pure-white);
+        }
+
+        .royal-btn.secondary:hover {
+            background: var(--pure-white);
+            color: var(--royal-blue);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Floating Elements */
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .floating-element {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.1);
+            font-size: 3rem;
+            animation: float 8s infinite ease-in-out;
+        }
+
+        .floating-element:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-element:nth-child(2) {
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .floating-element:nth-child(3) {
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        /* Main Content Sections */
+        .content-section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--royal-blue);
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(45deg, var(--gold-accent), #fbbf24);
+            border-radius: 2px;
+        }
+
+        .section-header p {
+            font-size: 1.2rem;
+            color: #64748b;
+            font-weight: 300;
+        }
+
+        /* Grid Layout */
+        .royal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        /* Feature Cards */
+        .royal-card {
+            background: var(--pure-white);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--light-gray);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .royal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--royal-blue), var(--light-blue), var(--accent-blue));
+        }
+
+        .royal-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-large);
+            border-color: var(--light-blue);
+        }
+
+        .feature-icon, .action-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--royal-blue), var(--light-blue));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            position: relative;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .feature-icon i, .action-icon i {
+            font-size: 2rem;
+            color: var(--pure-white);
+        }
+
+        .royal-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--royal-blue);
+            margin-bottom: 1rem;
+        }
+
+        .royal-card p {
+            color: #64748b;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Feature Stats */
+        .feature-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .feature-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--royal-blue);
+        }
+
+        .feature-stats i {
+            color: var(--gold-accent);
+        }
+
+        /* Action Cards Button */
+        .action-btn {
+            background: linear-gradient(135deg, var(--royal-blue), var(--light-blue));
+            color: var(--pure-white);
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+            background: linear-gradient(135deg, var(--light-blue), var(--accent-blue));
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+            50% {
+                transform: translateY(-10px) rotate(-5deg);
+            }
+            75% {
+                transform: translateY(-15px) rotate(3deg);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .top-nav {
+                top: 1rem;
+                left: 1rem;
+                right: 1rem;
+                transform: none;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+                padding: 0.75rem;
+            }
+            
+            .nav-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+                flex: 1;
+                min-width: 120px;
+                justify-content: center;
+            }
+            
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .section-header h2 {
+                font-size: 2.2rem;
+            }
+            
+            .royal-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        /* Scroll animations */
+        .content-section {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .content-section.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <a href="home" class="nav-btn nav-link">
+            <i class="fas fa-home"></i>
+            Home
+        </a>
+        <a href="about" class="nav-btn nav-link">
+            <i class="fas fa-info-circle"></i>
+            About
+        </a>
+        <a href="services" class="nav-btn nav-link">
+            <i class="fas fa-concierge-bell"></i>
+            Services
+        </a>
+        <a href="login" class="nav-btn login">
+            <i class="fas fa-sign-in-alt"></i>
+            Login
+        </a>
+        <a href="register" class="nav-btn register">
+            <i class="fas fa-user-plus"></i>
+            Register
+        </a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <i class="fas fa-museum"></i>
+                Welcome to MuseumHub
+            </h1>
+            <p class="hero-subtitle">
+                Experience art and history like never before with our immersive 3D exhibits and AI-powered guided tours
+            </p>
+            <div class="hero-buttons">
+                <a href="book_ticket" class="royal-btn primary">
+                    <i class="fas fa-ticket-alt"></i>
+                    Book Tickets
+                </a>
+                <a href="view" class="royal-btn secondary">
+                    <i class="fas fa-eye"></i>
+                    Explore Exhibits
+                </a>
+            </div>
+        </div>
+        <!-- 3D Floating Elements -->
+        <div class="floating-elements">
+            <div class="floating-element">
+                <i class="fas fa-palette"></i>
+            </div>
+            <div class="floating-element">
+                <i class="fas fa-landmark"></i>
+            </div>
+            <div class="floating-element">
+                <i class="fas fa-scroll"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="content-section">
+        <div class="section-header">
+            <h2>Why Choose MuseumHub?</h2>
+            <p>Discover the future of museum experiences with royal elegance</p>
+        </div>
+        <div class="royal-grid">
+            <div class="royal-card">
+                <div class="feature-icon">
+                    <i class="fas fa-vr-cardboard"></i>
+                </div>
+                <h3>3D Virtual Tours</h3>
+                <p>Explore exhibits in stunning 3D with interactive virtual reality experiences that bring history to life with unprecedented detail and immersion.</p>
+                <div class="feature-stats">
+                    <span><i class="fas fa-users"></i> 10K+ Visitors</span>
+                    <span><i class="fas fa-star"></i> 4.9/5 Rating</span>
+                </div>
+            </div>
+            <div class="royal-card">
+                <div class="feature-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3>AI Assistant</h3>
+                <p>Get personalized guidance from our intelligent chatbot that knows every exhibit and can answer any question with scholarly precision.</p>
+                <div class="feature-stats">
+                    <span><i class="fas fa-comments"></i> 24/7 Support</span>
+                    <span><i class="fas fa-brain"></i> Smart Learning</span>
+                </div>
+            </div>
+            <div class="royal-card">
+                <div class="feature-icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <h3>Multilingual Support</h3>
+                <p>Experience exhibits in your preferred language with our advanced translation and localization features for a truly global experience.</p>
+                <div class="feature-stats">
+                    <span><i class="fas fa-language"></i> 10+ Languages</span>
+                    <span><i class="fas fa-globe-americas"></i> Global Access</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Actions Section -->
+    <section class="content-section">
+        <div class="section-header">
+            <h2>Quick Actions</h2>
+            <p>Begin your extraordinary museum journey</p>
+        </div>
+        <div class="royal-grid">
+            <div class="royal-card">
+                <div class="action-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <h3>Book Tickets</h3>
+                <p>Reserve your spot for upcoming exhibits and special events. Secure your place in history with our premium booking system.</p>
+                <a href="book_ticket" class="action-btn">
+                    Book Now
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="royal-card">
+                <div class="action-icon">
+                    <i class="fas fa-ticket-alt"></i>
+                </div>
+                <h3>My Tickets</h3>
+                <p>View and manage your booked tickets with ease. Access your digital tickets and receive important updates.</p>
+                <a href="my_tickets" class="action-btn">
+                    View Tickets
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="royal-card">
+                <div class="action-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3>Ask the AI</h3>
+                <p>Chat with our sophisticated AI assistant for instant help, detailed information, and personalized recommendations.</p>
+                <a href="chatbot" class="action-btn">
+                    Chat Now
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Scroll animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all content sections
+        document.querySelectorAll('.content-section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

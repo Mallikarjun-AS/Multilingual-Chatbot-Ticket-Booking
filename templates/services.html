@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services - MuseumHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --royal-blue: #1e3a8a;
+            --navy-blue: #1e40af;
+            --light-blue: #3b82f6;
+            --accent-blue: #60a5fa;
+            --pure-white: #ffffff;
+            --soft-white: #f8fafc;
+            --light-gray: #e2e8f0;
+            --text-dark: #1e293b;
+            --gold-accent: #d97706;
+            --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-large: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--soft-white) 0%, #e6f2ff 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .top-nav {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            gap: 1rem;
+            animation: fadeInDown 1s ease-out;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 50px;
+            padding: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .nav-btn.nav-link {
+            background: transparent;
+            color: var(--royal-blue);
+            border: 2px solid transparent;
+        }
+
+        .nav-btn.nav-link:hover, .nav-btn.nav-link.active {
+            background: var(--royal-blue);
+            color: var(--pure-white);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        .nav-btn.login {
+            background: rgba(30, 58, 138, 0.1);
+            color: var(--royal-blue);
+            border: 2px solid var(--royal-blue);
+        }
+
+        .nav-btn.login:hover {
+            background: var(--royal-blue);
+            color: var(--pure-white);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .nav-btn.register {
+            background: linear-gradient(45deg, var(--gold-accent), #fbbf24);
+            color: var(--pure-white);
+            border: 2px solid transparent;
+            box-shadow: var(--shadow-light);
+        }
+
+        .nav-btn.register:hover {
+            background: linear-gradient(45deg, #d97706, var(--gold-accent));
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Hero Header Section */
+        .hero-header {
+            background: linear-gradient(135deg, var(--royal-blue) 0%, var(--navy-blue) 50%, var(--light-blue) 100%);
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--pure-white);
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 1s ease-out 0.2s both;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-header h2 i {
+            color: var(--gold-accent);
+            margin-right: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            font-weight: 300;
+            animation: fadeInUp 1s ease-out 0.4s both;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Floating decorative elements */
+        .floating-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: floatShape 8s infinite ease-in-out;
+        }
+
+        .floating-shape:nth-child(1) {
+            width: 120px;
+            height: 120px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-shape:nth-child(2) {
+            width: 80px;
+            height: 80px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .floating-shape:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            bottom: 20%;
+            left: 70%;
+            animation-delay: 4s;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 6rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Modern Grid */
+        .modern-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        /* Service Cards */
+        .modern-card {
+            background: var(--pure-white);
+            border-radius: 25px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--light-gray);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: slideInUp 0.8s ease-out forwards;
+        }
+
+        .modern-card:nth-child(1) { animation-delay: 0.1s; }
+        .modern-card:nth-child(2) { animation-delay: 0.2s; }
+        .modern-card:nth-child(3) { animation-delay: 0.3s; }
+        .modern-card:nth-child(4) { animation-delay: 0.4s; }
+        .modern-card:nth-child(5) { animation-delay: 0.5s; }
+
+        .modern-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--royal-blue), var(--light-blue), var(--accent-blue));
+            border-radius: 25px 25px 0 0;
+        }
+
+        .modern-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(30, 58, 138, 0.05) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .modern-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: var(--shadow-large);
+            border-color: var(--light-blue);
+        }
+
+        .modern-card:hover::after {
+            opacity: 1;
+        }
+
+        .modern-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--royal-blue);
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .modern-card h3 i {
+            color: var(--gold-accent);
+            margin-right: 1rem;
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .modern-card:hover h3 i {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .modern-card p {
+            color: #64748b;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 2;
+            margin-bottom: 2rem;
+        }
+
+        /* Service Features */
+        .service-features {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .service-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--royal-blue), var(--light-blue));
+            color: var(--pure-white);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: var(--shadow-light);
+            transition: transform 0.3s ease;
+        }
+
+        .service-feature:hover {
+            transform: translateY(-2px);
+        }
+
+        .service-feature i {
+            color: var(--gold-accent);
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: var(--royal-blue);
+            color: var(--pure-white);
+            padding: 4rem 2rem;
+            margin: 4rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--gold-accent);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--soft-white) 0%, var(--pure-white) 100%);
+            padding: 6rem 2rem;
+            text-align: center;
+            border-radius: 50px;
+            margin: 4rem 2rem;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .cta-section h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--royal-blue);
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            color: #64748b;
+            margin-bottom: 2rem;
+        }
+
+        .royal-btn {
+            padding: 1.2rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: linear-gradient(45deg, var(--royal-blue), var(--light-blue));
+            color: var(--pure-white);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .royal-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-large);
+            background: linear-gradient(45deg, var(--light-blue), var(--accent-blue));
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) translateX(-50%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) translateX(-50%);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes floatShape {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.7;
+            }
+            25% {
+                transform: translateY(-30px) rotate(90deg);
+                opacity: 0.4;
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+                opacity: 0.8;
+            }
+            75% {
+                transform: translateY(-35px) rotate(270deg);
+                opacity: 0.3;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .top-nav {
+                top: 1rem;
+                left: 1rem;
+                right: 1rem;
+                transform: none;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+                padding: 0.75rem;
+            }
+            
+            .nav-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+                flex: 1;
+                min-width: 120px;
+                justify-content: center;
+            }
+
+            .hero-header {
+                padding: 6rem 1rem 3rem;
+            }
+
+            .hero-header h2 {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .modern-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .modern-card {
+                padding: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+            }
+
+            .cta-section {
+                margin: 2rem 1rem;
+                padding: 4rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <a href="home" class="nav-btn nav-link">
+            <i class="fas fa-home"></i>
+            Home
+        </a>
+        <a href="about" class="nav-btn nav-link">
+            <i class="fas fa-info-circle"></i>
+            About
+        </a>
+        <a href="services" class="nav-btn nav-link active">
+            <i class="fas fa-concierge-bell"></i>
+            Services
+        </a>
+        <a href="login" class="nav-btn login">
+            <i class="fas fa-sign-in-alt"></i>
+            Login
+        </a>
+        <a href="register" class="nav-btn register">
+            <i class="fas fa-user-plus"></i>
+            Register
+        </a>
+    </div>
+
+    <!-- Hero Header -->
+    <section class="hero-header">
+        <div class="floating-bg">
+            <div class="floating-shape"></div>
+            <div class="floating-shape"></div>
+            <div class="floating-shape"></div>
+        </div>
+        <h2><i class="fas fa-concierge-bell"></i> Our Premium Services</h2>
+        <p class="hero-subtitle">Discover world-class museum experiences tailored for the digital age</p>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="modern-grid">
+            <div class="modern-card exhibit-card">
+                <h3><i class="fas fa-vr-cardboard"></i> 3D Virtual Tours</h3>
+                <p>Step into the museum from anywhere in the world with our interactive 3D virtual tours. Experience exhibits with unprecedented detail and immersion.</p>
+                <div class="service-features">
+                    <div class="service-feature">
+                        <i class="fas fa-eye"></i>
+                        360° Views
+                    </div>
+                    <div class="service-feature">
+                        <i class="fas fa-globe"></i>
+                        Global Access
+                    </div>
+                </div>
+            </div>
+
+            <div class="modern-card exhibit-card">
+                <h3><i class="fas fa-robot"></i> AI Chatbot Guide</h3>
+                <p>Get instant answers and personalized recommendations from our sophisticated AI assistant trained on museum knowledge.</p>
+                <div class="service-features">
+                    <div class="service-feature">
+                        <i class="fas fa-clock"></i>
+                        24/7 Available
+                    </div>
+                    <div class="service-feature">
+                        <i class="fas fa-brain"></i>
+                        Smart Learning
+                    </div>
+                </div>
+            </div>
+
+            <div class="modern-card exhibit-card">
+                <h3><i class="fas fa-language"></i> Multilingual Support</h3>
+                <p>Enjoy the museum experience in your preferred language with seamless translation and localized content.</p>
+                <div class="service-features">
+                    <div class="service-feature">
+                        <i class="fas fa-globe-americas"></i>
+                        10+ Languages
+                    </div>
+                    <div class="service-feature">
+                        <i class="fas fa-microphone"></i>
+                        Voice Support
+                    </div>
+                </div>
+            </div>
+
+            <div class="modern-card exhibit-card">
+                <h3><i class="fas fa-ticket-alt"></i> Online Ticket Booking</h3>
+                <p>Book your tickets online with ease and manage your reservations anytime through our secure platform.</p>
+                <div class="service-features">
+                    <div class="service-feature">
+                        <i class="fas fa-mobile-alt"></i>
+                        Mobile Tickets
+                    </div>
+                    <div class="service-feature">
+                        <i class="fas fa-shield-alt"></i>
+                        Secure Payment
+                    </div>
+                </div>
+            </div>
+
+            <div class="modern-card exhibit-card">
+                <h3><i class="fas fa-calendar-alt"></i> Event Scheduling</h3>
+                <p>Stay updated with upcoming events, workshops, and special exhibitions with personalized notifications.</p>
+                <div class="service-features">
+                    <div class="service-feature">
+                        <i class="fas fa-bell"></i>
+                        Smart Alerts
+                    </div>
+                    <div class="service-feature">
+                        <i class="fas fa-star"></i>
+                        VIP Events
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <span class="stat-number">50K+</span>
+                <span class="stat-label">Happy Visitors</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">500+</span>
+                <span class="stat-label">Exhibits</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">10+</span>
+                <span class="stat-label">Languages</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">24/7</span>
+                <span class="stat-label">AI Support</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h3>Ready to Experience MuseumHub?</h3>
+        <p>Join thousands of visitors who have discovered the future of museum exploration</p>
+        <a href="book_ticket" class="royal-btn">
+            <i class="fas fa-ticket-alt"></i>
+            Book Your Visit
+        </a>
+    </section>
+
+    <script>
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, observerOptions);
+
+        // Observe service cards
+        document.querySelectorAll('.modern-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Counter animation for stats
+        const animateCounter = (element, target) => {
+            let current = 0;
+            const increment = target / 100;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                
+                if (element.textContent.includes('+')) {
+                    element.textContent = Math.floor(current).toLocaleString() + '+';
+                } else if (element.textContent.includes('/')) {
+                    element.textContent = Math.floor(current) + '/7';
+                } else {
+                    element.textContent = Math.floor(current).toLocaleString();
+                }
+            }, 20);
+        };
+
+        // Animate stats when they come into view
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const numberElement = entry.target.querySelector('.stat-number');
+                    const text = numberElement.textContent;
+                    const number = parseInt(text.replace(/[^0-9]/g, ''));
+                    
+                    animateCounter(numberElement, number);
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.stat-item').forEach(item => {
+            statsObserver.observe(item);
+        });
+
+        // Smooth scrolling for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

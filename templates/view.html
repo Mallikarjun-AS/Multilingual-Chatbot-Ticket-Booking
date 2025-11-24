@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exhibits - MuseumHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <style>
+        :root {
+            --royal-blue: #1e3a8a;
+            --navy-blue: #1e40af;
+            --light-blue: #3b82f6;
+            --accent-blue: #60a5fa;
+            --pure-white: #ffffff;
+            --soft-white: #f8fafc;
+            --light-gray: #e2e8f0;
+            --text-dark: #1e293b;
+            --gold-accent: #d97706;
+            --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-large: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --shadow-xl: 0 35px 70px -15px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--soft-white) 0%, #e6f2ff 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .top-nav {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            gap: 1rem;
+            animation: fadeInDown 1s ease-out;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 50px;
+            padding: 0.5rem;
+            border: 1px solid rgba(30, 58, 138, 0.1);
+            box-shadow: var(--shadow-large);
+        }
+
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .nav-btn.nav-link {
+            background: transparent;
+            color: var(--royal-blue);
+            border: 2px solid transparent;
+        }
+
+        .nav-btn.nav-link:hover, .nav-btn.nav-link.active {
+            background: var(--royal-blue);
+            color: var(--pure-white);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        .nav-btn.login {
+            background: rgba(30, 58, 138, 0.1);
+            color: var(--royal-blue);
+            border: 2px solid var(--royal-blue);
+        }
+
+        .nav-btn.login:hover {
+            background: var(--royal-blue);
+            color: var(--pure-white);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .nav-btn.register {
+            background: linear-gradient(45deg, var(--gold-accent), #fbbf24);
+            color: var(--pure-white);
+            border: 2px solid transparent;
+            box-shadow: var(--shadow-light);
+        }
+
+        .nav-btn.register:hover {
+            background: linear-gradient(45deg, #d97706, var(--gold-accent));
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Hero Header */
+        .hero-header {
+            background: linear-gradient(135deg, var(--royal-blue) 0%, var(--navy-blue) 50%, var(--light-blue) 100%);
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--pure-white);
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 1s ease-out 0.2s both;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-header h2 i {
+            color: var(--gold-accent);
+            margin-right: 1rem;
+            animation: rotateIcon 3s infinite ease-in-out;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            font-weight: 300;
+            animation: fadeInUp 1s ease-out 0.4s both;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Floating 3D Elements */
+        .floating-3d {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .floating-icon {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.1);
+            font-size: 4rem;
+            animation: float3D 10s infinite ease-in-out;
+        }
+
+        .floating-icon:nth-child(1) {
+            top: 15%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-icon:nth-child(2) {
+            top: 70%;
+            right: 15%;
+            animation-delay: 3s;
+        }
+
+        .floating-icon:nth-child(3) {
+            bottom: 25%;
+            left: 70%;
+            animation-delay: 6s;
+        }
+
+        .floating-icon:nth-child(4) {
+            top: 40%;
+            right: 30%;
+            animation-delay: 9s;
+        }
+
+        /* Search and Filter Section */
+        .controls-section {
+            background: var(--pure-white);
+            padding: 2rem;
+            margin: -2rem 2rem 2rem;
+            border-radius: 25px;
+            box-shadow: var(--shadow-large);
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-filter-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 3rem 1rem 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--soft-white);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--royal-blue);
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--royal-blue);
+            font-size: 1.2rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--soft-white);
+            color: var(--royal-blue);
+            border: 2px solid var(--light-gray);
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--royal-blue);
+            color: var(--pure-white);
+            border-color: var(--royal-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Exhibits Grid */
+        .modern-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 2.5rem;
+            margin-top: 2rem;
+        }
+
+        /* Exhibit Cards */
+        .modern-card {
+            background: var(--pure-white);
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--light-gray);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: slideInUp 0.8s ease-out forwards;
+        }
+
+        .modern-card:nth-child(odd) { animation-delay: 0.1s; }
+        .modern-card:nth-child(even) { animation-delay: 0.2s; }
+        .modern-card:nth-child(3n) { animation-delay: 0.3s; }
+
+        .modern-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--royal-blue), var(--light-blue), var(--accent-blue));
+            z-index: 2;
+        }
+
+        .modern-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--light-blue);
+        }
+
+        .model-container {
+            position: relative;
+            height: 350px;
+            background: linear-gradient(135deg, var(--soft-white), #f1f5f9);
+            border-radius: 0 0 20px 20px;
+            overflow: hidden;
+        }
+
+        .model-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(30, 58, 138, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .model-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            color: var(--royal-blue);
+            flex-direction: column;
+            gap: 1rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .model-placeholder i {
+            font-size: 4rem;
+            opacity: 0.5;
+            animation: pulse 2s infinite;
+        }
+
+        .card-content {
+            padding: 2rem;
+            position: relative;
+        }
+
+        .card-content h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--royal-blue);
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .card-content h4::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--gold-accent);
+            border-radius: 2px;
+        }
+
+        .card-content p {
+            color: #64748b;
+            line-height: 1.7;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .view-details-btn {
+            background: linear-gradient(135deg, var(--royal-blue), var(--light-blue));
+            color: var(--pure-white);
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .view-details-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+            background: linear-gradient(135deg, var(--light-blue), var(--accent-blue));
+        }
+
+        .exhibit-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .exhibit-tag {
+            background: var(--soft-white);
+            color: var(--royal-blue);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1px solid var(--light-gray);
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--light-gray);
+            border-top: 4px solid var(--royal-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 3;
+        }
+
+        /* Statistics Section */
+        .stats-section {
+            background: linear-gradient(135deg, var(--royal-blue) 0%, var(--navy-blue) 100%);
+            padding: 4rem 2rem;
+            margin: 4rem 0;
+            color: var(--pure-white);
+            text-align: center;
+        }
+
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-item {
+            padding: 2rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--gold-accent);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-top: 0.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-dark);
+            color: var(--pure-white);
+            padding: 3rem 2rem 1rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--pure-white);
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) translateX(-50%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) translateX(-50%);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float3D {
+            0%, 100% {
+                transform: translateY(0px) rotateX(0deg) rotateY(0deg);
+                opacity: 0.3;
+            }
+            25% {
+                transform: translateY(-30px) rotateX(15deg) rotateY(90deg);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translateY(-20px) rotateX(-10deg) rotateY(180deg);
+                opacity: 0.8;
+            }
+            75% {
+                transform: translateY(-35px) rotateX(10deg) rotateY(270deg);
+                opacity: 0.4;
+            }
+        }
+
+        @keyframes rotateIcon {
+            0%, 100% {
+                transform: rotateY(0deg);
+            }
+            25% {
+                transform: rotateY(15deg);
+            }
+            50% {
+                transform: rotateY(-10deg);
+            }
+            75% {
+                transform: rotateY(20deg);
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .top-nav {
+                top: 1rem;
+                left: 1rem;
+                right: 1rem;
+                transform: none;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+                padding: 0.75rem;
+            }
+            
+            .nav-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+                flex: 1;
+                min-width: 120px;
+                justify-content: center;
+            }
+
+            .hero-header {
+                padding: 6rem 1rem 3rem;
+            }
+
+            .hero-header h2 {
+                font-size: 2.5rem;
+            }
+
+            .controls-section {
+                margin: -2rem 1rem 2rem;
+                padding: 1.5rem;
+            }
+
+            .search-filter-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .search-box {
+                min-width: auto;
+            }
+
+            .modern-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .stat-item {
+                padding: 1.5rem;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Special effects for 3D models */
+        .model-container:hover::before {
+            background: radial-gradient(circle at center, rgba(30, 58, 138, 0.1) 0%, transparent 70%);
+        }
+
+        /* Exhibit categories */
+        .category-ancient { border-left: 4px solid #8B4513; }
+        .category-wildlife { border-left: 4px solid #228B22; }
+        .category-technology { border-left: 4px solid #4169E1; }
+        .category-mythology { border-left: 4px solid #DAA520; }
+        .category-sculpture { border-left: 4px solid #800080; }
+
+        /* Hidden class for filtering */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <a href="#home" class="nav-btn nav-link">
+            <i class="fas fa-home"></i>
+            Home
+        </a>
+        <a href="#about" class="nav-btn nav-link">
+            <i class="fas fa-info-circle"></i>
+            About
+        </a>
+        <a href="#services" class="nav-btn nav-link">
+            <i class="fas fa-concierge-bell"></i>
+            Services
+        </a>
+        <a href="#exhibits" class="nav-btn nav-link active">
+            <i class="fas fa-eye"></i>
+            Exhibits
+        </a>
+        <a href="#login" class="nav-btn login">
+            <i class="fas fa-sign-in-alt"></i>
+            Login
+        </a>
+        <a href="#register" class="nav-btn register">
+            <i class="fas fa-user-plus"></i>
+            Register
+        </a>
+    </div>
+
+    <!-- Hero Header -->
+    <section class="hero-header">
+        <div class="floating-3d">
+            <div class="floating-icon"><i class="fas fa-cube"></i></div>
+            <div class="floating-icon"><i class="fas fa-dragon"></i></div>
+            <div class="floating-icon"><i class="fas fa-camera-retro"></i></div>
+            <div class="floating-icon"><i class="fas fa-crown"></i></div>
+        </div>
+        <h2><i class="fas fa-eye"></i> Explore 3D Exhibits</h2>
+        <p class="hero-subtitle">Immerse yourself in history with our interactive 3D collection</p>
+    </section>
+
+    <!-- Search and Filter Controls -->
+    <section class="controls-section">
+        <div class="search-filter-container">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search exhibits..." id="searchInput">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="ancient">Ancient</button>
+                <button class="filter-btn" data-filter="wildlife">Wildlife</button>
+                <button class="filter-btn" data-filter="technology">Technology</button>
+                <button class="filter-btn" data-filter="mythology">Mythology</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="modern-grid" id="exhibitsGrid">
+            <!-- Dinosaur Sculpture -->
+            <div class="modern-card exhibit-card category-wildlife" data-category="wildlife" data-name="dinosaur sculpture">
+                <div class="model-container">
+                    <div class="loading-spinner"></div>
+                    <model-viewer src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" 
+                                  alt="Dinosaur Sculpture"
+                                  auto-rotate 
+                                  camera-controls 
+                                  background-color="transparent"
+                                  loading="eager"
+                                  interaction-prompt="auto"
+                                  ar
+                                  ar-modes="webxr scene-viewer quick-look"
+                                  environment-image="https://modelviewer.dev/shared-assets/environments/moon_1k.hdr">
+                    </model-viewer>
+                </div>
+                <div class="card-content">
+                    <h4>Dinosaur Sculpture</h4>
+                    <p>Marvel at the intricate details of this prehistoric masterpiece, showcasing the magnificent creatures that once roamed our planet millions of years ago.</p>
+                    <div class="exhibit-tags">
+                        <span class="exhibit-tag">Prehistoric</span>
+                        <span class="exhibit-tag">Wildlife</span>
+                        <span class="exhibit-tag">3D Model</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="#" class="view-details-btn">
+                            <i class="fas fa-info-circle"></i>
+                            Learn More
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phoenix Bird -->
+            <div class="modern-card exhibit-card category-mythology" data-category="mythology" data-name="phoenix bird">
+                <div class="model-container">
+                    <div class="loading-spinner"></div>
+                    <model-viewer src="https://modelviewer.dev/shared-assets/models/glTF-Sample-Models/2.0/DamagedHelmet/glTF/DamagedHelmet.gltf" 
+                                  alt="Phoenix Bird"
+                                  auto-rotate 
+                                  camera-controls 
+                                  background-color="transparent"
+                                  loading="eager"
+                                  interaction-prompt="auto"
+                                  ar
+                                  ar-modes="webxr scene-viewer quick-look"
+                                  environment-image="https://modelviewer.dev/shared-assets/environments/spruit_sunrise_1k_HDR.hdr">
+                    </model-viewer>
+                </div>
+                <div class="card-content">
+                    <h4>Phoenix Bird</h4>
+                    <p>Discover the mythical phoenix in stunning 3D detail, representing rebirth and renewal in ancient mythologies across cultures.</p>
+                    <div class="exhibit-tags">
+                        <span class="exhibit-tag">Mythology</span>
+                        <span class="exhibit-tag">Legendary</span>
+                        <span class="exhibit-tag">Phoenix</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="#" class="view-details-btn">
+                            <i class="fas fa-info-circle"></i>
+                            Learn More
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wooden Bicycle -->
+            <div class="modern-card exhibit-card category-technology" data-category="technology" data-name="wooden bicycle">
+                <div class="model-container">
+                    <div class="loading-spinner"></div>
+                    <model-viewer src="https://modelviewer.dev/shared-assets/models/glTF-Sample-Models/2.0/Avocado/glTF/Avocado.gltf" 
+                                  alt="Wooden Bicycle"
+                                  auto-rotate 
+                                  camera-controls 
+                                  background-color="transparent"
+                                  loading="eager"
+                                  interaction-prompt="auto"
+                                  ar
+                                  ar-modes="webxr scene-viewer quick-look"
+                                  environment-image="https://modelviewer.dev/shared-assets/environments/aircraft_workshop_01_1k.hdr">
+                    </model-viewer>
+                </div>
+                <div class="card-content">
+                    <h4>Wooden Bicycle</h4>
+                    <p>Explore this unique wooden bicycle from our collection, showcasing early transportation innovation and craftsmanship.</p>
+                    <div class="exhibit-tags">
+                        <span class="exhibit-tag">Transportation</span>
+                        <span class="exhibit-tag">Vintage</span>
+                        <span class="exhibit-tag">Wooden</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="#" class="view-details-btn">
+                            <i class="fas fa-info-circle"></i>
+                            Learn More
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dodo Bird -->
+            <div class="modern-card exhibit-card category-wildlife" data-category="wildlife" data-name="dodo bird extinct">
+                <div class="model-container">
+                    <div class="loading-spinner"></div>
+                    <model-viewer src="{{ url_for('static', filename='models/dodo.glb') }}"
+                                  alt="Dodo Bird"
+                                  auto-rotate 
+                                  camera-controls 
+                                  background-color="transparent"
+                                  loading="eager"
+                                  interaction-prompt="auto"
+                                  ar
+                                  ar-modes="webxr scene-viewer quick-look"
+                                  environment-image="https://modelviewer.dev/shared-assets/environments/forest_slope_1k.hdr">
+                    </model-viewer>
+                </div>
+                <div class="card-content">
+                    <h4>Dodo Bird (Extinct)</h4>
+                    <p>Experience the extinct dodo bird in 3D, a poignant reminder of species we've lost and the importance of conservation.</p>
+                    <div class="exhibit-tags">
+                        <span class="exhibit-tag">Extinct</span>
+                        <span class="exhibit-tag">Rare</span>
+                        <span class="exhibit-tag">Conservation</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="#" class="view-details-btn">
+                            <i class="fas fa-info-circle"></i>
+                            Learn More
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Black & White TV -->
+            <div class="modern-card exhibit-card category-technology" data-category="technology" data-name="black white tv blewder.glb">
+                <div class="model-container">
+                    <div class="loading-spinner"></div>
+                    <model-viewer src="https://modelviewer.dev/shared-assets/models/glTF-Sample-Models/2.0/BoomBox/glTF/BoomBox.gltf" 
+                                  alt="Black and White TV"
+                                  auto-rotate 
+                                  camera-controls 
+                                  background-color="transparent"
+                                  loading="eager"
+                                  interaction-prompt="auto"
+                                  ar
+                                  ar-modes="webxr scene-viewer quick-look"
+                                  environment-image="https://modelviewer.dev/shared-assets/environments/legacy.hdr">
+                    </model-viewer>
+                </div>
